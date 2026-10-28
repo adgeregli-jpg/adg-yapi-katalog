@@ -5,17 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ADG Yapı | Tanıtım</title>
   <style>
-    :root { --primary: #1f2a37; --accent: #c8a24a; --light: #f5f6f8; --text: #333; }
+    :root { --primary: #6b2200; --accent: #ff6a13; --light: #fdf3ec; --text: #333; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); line-height: 1.6; }
     header { background: var(--primary); color: #fff; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-size: 1.4rem; letter-spacing: 1px; }
     header nav a { color: #fff; text-decoration: none; margin-left: 1.5rem; font-size: 0.95rem; }
     header nav a:hover { color: var(--accent); }
-    .hero { background: var(--primary); color: #fff; text-align: center; padding: 6rem 2rem; }
-    .hero h2 { font-size: 2.4rem; margin-bottom: 1rem; }
-    .hero p { font-size: 1.15rem; max-width: 640px; margin: 0 auto; }
-    .btn { display: inline-block; margin-top: 2rem; background: var(--accent); color: var(--primary); padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; }
+    .hero {
+      background: linear-gradient(rgba(107,34,0,0.35), rgba(107,34,0,0.35)),
+                  url('ADG%20Yap%C4%B1%20Kurumsal%20Kimlik%20K%C4%B1lavuzu_page-0002.jpg') center/cover no-repeat;
+      color: #fff;
+      text-align: center;
+      padding: 8rem 2rem;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn { display: inline-block; margin: 0.5rem; background: var(--accent); color: #fff; padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; }
+    .btn.outline { background: transparent; border: 2px solid #fff; }
     section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
     section h3 { font-size: 1.8rem; color: var(--primary); margin-bottom: 1rem; text-align: center; }
     .section-intro { text-align: center; max-width: 700px; margin: 0 auto 2.5rem; }
@@ -24,13 +34,16 @@
     .card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.15rem; }
     .alt { background: var(--light); max-width: none; }
     .alt > * { max-width: 1100px; margin-left: auto; margin-right: auto; }
+    .video-wrap { max-width: 800px; margin: 0 auto; }
+    .video-wrap video { width: 100%; border-radius: 6px; background: #000; }
+    .download { text-align: center; margin-top: 2rem; }
+    .download a { display: inline-block; background: var(--primary); color: #fff; padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; }
     .contact { text-align: center; }
     .contact p { margin: 0.4rem 0; }
     footer { background: var(--primary); color: #ccc; text-align: center; padding: 1.5rem; font-size: 0.9rem; }
     @media (max-width: 700px) {
       header { flex-direction: column; gap: 0.8rem; }
       header nav a { margin: 0 0.6rem; }
-      .hero h2 { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -41,40 +54,56 @@
     <nav>
       <a href="#hakkimizda">Hakkımızda</a>
       <a href="#hizmetler">Hizmetler</a>
+      <a href="#film">Tanıtım Filmi</a>
       <a href="#iletisim">İletişim</a>
     </nav>
   </header>
 
   <div class="hero">
-    <h2>Güvenilir Yapı, Güçlü Gelecek</h2>
-    <p>Arsa temininden anahtar teslimine kadar, kaliteli ve güvenilir inşaat çözümleri sunuyoruz.</p>
     <a class="btn" href="#iletisim">Bize Ulaşın</a>
+    <a class="btn outline" href="ADG_Yapi_Tanitim_Katalogu.pdf" target="_blank">Kataloğu Görüntüle</a>
   </div>
 
   <section id="hakkimizda">
     <h3>Hakkımızda</h3>
     <p class="section-intro">
-      ADG Yapı, arsa temini, inşaat ve kentsel dönüşüm alanlarında faaliyet gösteren bir yapı firmasıdır.
-      Projelerimizde kalite, güven ve zamanında teslimi ön planda tutuyoruz.
+      ADG Yapı, arsa temini ve inşaat alanında faaliyet gösteren bir inşaat firmasıdır.
+      Uygun arsaları bularak üzerine konut projeleri geliştirmeyi hedefliyoruz.
+      Bu süreçte uzmanlık alanımız kentsel dönüşümdür; yapılarının dönüşüm sürecinde
+      güvenilir bir çözüm ortağı arayan arsa ve bina sahiplerinin yanındayız.
     </p>
   </section>
 
   <section id="hizmetler" class="alt">
-    <h3>Hizmetlerimiz</h3>
+    <h3>Faaliyet Alanlarımız</h3>
     <p class="section-intro">Uçtan uca yapı hizmetleriyle yanınızdayız.</p>
     <div class="grid">
       <div class="card">
         <h4>Arsa Temini</h4>
-        <p>Projenize uygun arsaların tespiti, değerlendirmesi ve temini.</p>
+        <p>Uygun konumda arsa arayışı ve değerlendirmesi ile yeni projelerin temelini oluşturuyoruz.</p>
       </div>
       <div class="card">
         <h4>İnşaat</h4>
-        <p>Konut ve ticari projelerin planlamasından teslimine kadar tüm süreçler.</p>
+        <p>Edindiğimiz arsalar üzerinde konut projelerini planlayıp inşa ediyoruz.</p>
       </div>
       <div class="card">
         <h4>Kentsel Dönüşüm</h4>
-        <p>Dönüşüm projelerinde malik ve paydaşlarla birlikte ilerleyen, şeffaf yönetim.</p>
+        <p>Arsa payı 400 m² ve üzeri yapılarda kentsel dönüşüm çalışmalarını yürütüyoruz.</p>
       </div>
+    </div>
+  </section>
+
+  <section id="film">
+    <h3>Tanıtım Filmi</h3>
+    <p class="section-intro">ADG Yapı'yı kısaca tanıyın.</p>
+    <div class="video-wrap">
+      <video controls preload="metadata" playsinline>
+        <source src="ADG_Yapi_Reklam_Filmi_Muzikli5.mp4" type="video/mp4">
+        Tarayıcınız video oynatmayı desteklemiyor.
+      </video>
+    </div>
+    <div class="download">
+      <a href="ADG_Yapi_Tanitim_Katalogu.pdf" target="_blank">Kurumsal Kataloğu İndir (PDF)</a>
     </div>
   </section>
 
