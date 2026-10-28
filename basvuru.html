@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kentsel Dönüşüm Başvurusu | ADG Yapı</title>
+<style>
+:root { --primary:#6b2200; --accent:#ff6a13; --light:#fdf3ec; --text:#333; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--text); line-height:1.6; background:#fff; }
+header { background:var(--primary); color:#fff; padding:1.2rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+header a { color:#fff; text-decoration:none; font-weight:600; }
+.wrap { max-width:640px; margin:2.5rem auto; padding:0 1.5rem; }
+h1 { color:var(--primary); font-size:1.8rem; margin-bottom:0.5rem; }
+.lead { margin-bottom:2rem; color:#555; }
+form { background:var(--light); padding:2rem; border-radius:6px; border-top:4px solid var(--accent); }
+.field { margin-bottom:1.2rem; }
+label { display:block; font-weight:600; margin-bottom:0.4rem; color:var(--primary); }
+input, select, textarea { width:100%; padding:0.7rem; border:1px solid #d9c7b8; border-radius:4px; font:inherit; background:#fff; }
+textarea { min-height:90px; resize:vertical; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.check { display:flex; gap:0.6rem; align-items:flex-start; font-size:0.9rem; }
+.check input { width:auto; margin-top:0.3rem; }
+.check label { font-weight:normal; color:var(--text); margin:0; }
+button { background:var(--accent); color:#fff; border:0; padding:0.9rem 1.8rem; border-radius:4px; font-weight:600; font-size:1rem; cursor:pointer; width:100%; margin-top:1rem; }
+button:hover { opacity:0.9; }
+.hp { display:none; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html">ADG YAPI</a>
+  <a href="index.html">← Ana sayfa</a>
+</header>
+
+<div class="wrap">
+  <h1>Kentsel Dönüşüm Başvurusu</h1>
+  <p class="lead">Formu doldurun, ekibimiz en kısa sürede sizinle iletişime geçsin.</p>
+
+  <form action="https://formsubmit.co/adgeregli@gmail.com" method="POST">
+    <input type="hidden" name="_subject" value="Yeni Kentsel Dönüşüm Başvurusu">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="true">
+    <input type="hidden" name="_next" value="https://adgeregli-jpg.github.io/adg-yapi-katalog/">
+    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off">
+
+    <div class="row">
+      <div class="field">
+        <label for="ad">Ad Soyad *</label>
+        <input type="text" id="ad" name="Ad Soyad" required>
+      </div>
+      <div class="field">
+        <label for="tel">Telefon *</label>
+        <input type="tel" id="tel" name="Telefon" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="eposta">E-posta</label>
+      <input type="email" id="eposta" name="E-posta">
+    </div>
+
+    <div class="field">
+      <label for="adres">Açık Adres *</label>
+      <textarea id="adres" name="Acik Adres" placeholder="Sokak, kapı no, bina no, daire no" required></textarea>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="il">İl *</label>
+        <select id="il" name="Il" required>
+          <option value="Zonguldak">Zonguldak</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ilce">İlçe *</label>
+        <select id="ilce" name="Ilce" required>
+          <option value="Ereğli" selected>Ereğli</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="mahalle">Mahalle *</label>
+      <select id="mahalle" name="Mahalle" required>
+        <option value="">Seçiniz</option>
+        <option value="Akarca Mahallesi">Akarca Mahallesi</option>
+        <option value="Bağlık Mahallesi">Bağlık Mahallesi</option>
+        <option value="Balı Mahallesi">Balı Mahallesi</option>
+        <option value="Belen Mahallesi">Belen Mahallesi</option>
+        <option value="Belen Yeni Mahallesi">Belen Yeni Mahallesi</option>
+        <option value="Bölücek Mahallesi">Bölücek Mahallesi</option>
+        <option value="Dağlar Mahallesi">Dağlar Mahallesi</option>
+        <option value="Elmatepe Mahallesi">Elmatepe Mahallesi</option>
+        <option value="Güldere Mahallesi">Güldere Mahallesi</option>
+        <option value="Göktepe Mahallesi">Göktepe Mahallesi</option>
+        <option value="Hamzafakılı Mahallesi">Hamzafakılı Mahallesi</option>
+        <option value="Kavaklık Mahallesi">Kavaklık Mahallesi</option>
+        <option value="Kepez Mahallesi">Kepez Mahallesi</option>
+        <option value="Kestaneci Mahallesi">Kestaneci Mahallesi</option>
+        <option value="Kışla Mahallesi">Kışla Mahallesi</option>
+        <option value="Kırmacı Mahallesi">Kırmacı Mahallesi</option>
+        <option value="Kıyıcak Mahallesi">Kıyıcak Mahallesi</option>
+        <option value="Kirmanlı Mahallesi">Kirmanlı Mahallesi</option>
+        <option value="Kocaali Mahallesi">Kocaali Mahallesi</option>
+        <option value="Korubaşı Mahallesi">Korubaşı Mahallesi</option>
+        <option value="Köseler Mahallesi">Köseler Mahallesi</option>
+        <option value="Murtaza Mahallesi">Murtaza Mahallesi</option>
+        <option value="Müftü Mahallesi">Müftü Mahallesi</option>
+        <option value="Orhanlar Mahallesi">Orhanlar Mahallesi</option>
+        <option value="Ömerli Mahallesi">Ömerli Mahallesi</option>
+        <option value="Ören Mahallesi">Ören Mahallesi</option>
+        <option value="Sarıkokmaz Mahallesi">Sarıkokmaz Mahallesi</option>
+        <option value="Süleymanlar Mahallesi">Süleymanlar Mahallesi</option>
+        <option value="Topçalı Mahallesi">Topçalı Mahallesi</option>
+        <option value="Uzunçayır Mahallesi">Uzunçayır Mahallesi</option>
+        <option value="Uzunmehmet Mahallesi">Uzunmehmet Mahallesi</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="ada">Ada *</label>
+        <input type="text" id="ada" name="Ada" required>
+      </div>
+      <div class="field">
+        <label for="parsel">Parsel *</label>
+        <input type="text" id="parsel" name="Parsel" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="aciklama">Açıklama</label>
+      <textarea id="aciklama" name="Aciklama" placeholder="Eklemek istediğiniz bilgiler"></textarea>
+    </div>
+
+    <div class="field check">
+      <input type="checkbox" id="kvkk" required>
+      <label for="kvkk">Kişisel verilerimin, başvurumun değerlendirilmesi amacıyla ADG Yapı tarafından işlenmesini kabul ediyorum.</label>
+    </div>
+
+    <button type="submit">Başvuruyu Gönder</button>
+  </form>
+</div>
+
+</body>
+</html>
