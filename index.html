@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADG Yapı | Tanıtım</title>
+  <style>
+    :root { --primary: #1f2a37; --accent: #c8a24a; --light: #f5f6f8; --text: #333; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); line-height: 1.6; }
+    header { background: var(--primary); color: #fff; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 1.4rem; letter-spacing: 1px; }
+    header nav a { color: #fff; text-decoration: none; margin-left: 1.5rem; font-size: 0.95rem; }
+    header nav a:hover { color: var(--accent); }
+    .hero { background: var(--primary); color: #fff; text-align: center; padding: 6rem 2rem; }
+    .hero h2 { font-size: 2.4rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.15rem; max-width: 640px; margin: 0 auto; }
+    .btn { display: inline-block; margin-top: 2rem; background: var(--accent); color: var(--primary); padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; }
+    section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    section h3 { font-size: 1.8rem; color: var(--primary); margin-bottom: 1rem; text-align: center; }
+    .section-intro { text-align: center; max-width: 700px; margin: 0 auto 2.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--light); padding: 2rem; border-top: 4px solid var(--accent); border-radius: 4px; }
+    .card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.15rem; }
+    .alt { background: var(--light); max-width: none; }
+    .alt > * { max-width: 1100px; margin-left: auto; margin-right: auto; }
+    .contact { text-align: center; }
+    .contact p { margin: 0.4rem 0; }
+    footer { background: var(--primary); color: #ccc; text-align: center; padding: 1.5rem; font-size: 0.9rem; }
+    @media (max-width: 700px) {
+      header { flex-direction: column; gap: 0.8rem; }
+      header nav a { margin: 0 0.6rem; }
+      .hero h2 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ADG YAPI</h1>
+    <nav>
+      <a href="#hakkimizda">Hakkımızda</a>
+      <a href="#hizmetler">Hizmetler</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>Güvenilir Yapı, Güçlü Gelecek</h2>
+    <p>Arsa temininden anahtar teslimine kadar, kaliteli ve güvenilir inşaat çözümleri sunuyoruz.</p>
+    <a class="btn" href="#iletisim">Bize Ulaşın</a>
+  </div>
+
+  <section id="hakkimizda">
+    <h3>Hakkımızda</h3>
+    <p class="section-intro">
+      ADG Yapı, arsa temini, inşaat ve kentsel dönüşüm alanlarında faaliyet gösteren bir yapı firmasıdır.
+      Projelerimizde kalite, güven ve zamanında teslimi ön planda tutuyoruz.
+    </p>
+  </section>
+
+  <section id="hizmetler" class="alt">
+    <h3>Hizmetlerimiz</h3>
+    <p class="section-intro">Uçtan uca yapı hizmetleriyle yanınızdayız.</p>
+    <div class="grid">
+      <div class="card">
+        <h4>Arsa Temini</h4>
+        <p>Projenize uygun arsaların tespiti, değerlendirmesi ve temini.</p>
+      </div>
+      <div class="card">
+        <h4>İnşaat</h4>
+        <p>Konut ve ticari projelerin planlamasından teslimine kadar tüm süreçler.</p>
+      </div>
+      <div class="card">
+        <h4>Kentsel Dönüşüm</h4>
+        <p>Dönüşüm projelerinde malik ve paydaşlarla birlikte ilerleyen, şeffaf yönetim.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="iletisim" class="contact">
+    <h3>İletişim</h3>
+    <p class="section-intro">Projeleriniz için bizimle iletişime geçin.</p>
+    <p><strong>Telefon:</strong> [telefon numarası]</p>
+    <p><strong>E-posta:</strong> [e-posta adresi]</p>
+    <p><strong>Adres:</strong> [firma adresi]</p>
+  </section>
+
+  <footer>
+    &copy; 2026 ADG Yapı. Tüm hakları saklıdır.
+  </footer>
+
+</body>
+</html>
