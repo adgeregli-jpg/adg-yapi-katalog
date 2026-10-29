@@ -7,7 +7,8 @@ voices = {k: {"text": v["text"], "dur": v["dur"], "at": AT[k],
               **({"nosub": True} if k in NOSUB else {})}
           for k, v in meta.items()}
 base = open("film.src.html", encoding="utf-8").read().replace("__VOICES__", json.dumps(voices, ensure_ascii=False))
-CDN = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.150.1/three.min.js"
+CDN  = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.150.1/three.min.js"
+CDN2 = "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"   # yedek
 
 head = """<!DOCTYPE html>
 <html lang="tr">
@@ -25,7 +26,8 @@ def standalone(src):
     i = src.index('<div class="wrap">')
     return head + src[:i] + "</head>\n<body>\n" + src[i:] + "</body>\n</html>\n"
 
-open("build/render.html","w",encoding="utf-8").write(standalone(base.replace("__THREE_SRC__","three.min.js")))
-open("adg-film3d.html","w",encoding="utf-8").write(base.replace("__THREE_SRC__", CDN))
-open("build/animasyon3d.html","w",encoding="utf-8").write(standalone(base.replace("__THREE_SRC__", CDN)))
+open("build/render.html","w",encoding="utf-8").write(standalone(base.replace("__THREE_SRC__","three.min.js").replace("__THREE_FALLBACK__","three.min.js")))
+open("build/fallback_test.html","w",encoding="utf-8").write(standalone(base.replace("__THREE_SRC__","yok.js").replace("__THREE_FALLBACK__","three.min.js")))
+open("adg-film3d.html","w",encoding="utf-8").write(base.replace("__THREE_SRC__", CDN).replace("__THREE_FALLBACK__", CDN2))
+open("build/animasyon3d.html","w",encoding="utf-8").write(standalone(base.replace("__THREE_SRC__", CDN).replace("__THREE_FALLBACK__", CDN2)))
 print("ok")

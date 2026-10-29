@@ -141,6 +141,12 @@
 
 <script src="__THREE_SRC__"></script>
 <script>
+  /* birinci kaynak yüklenmezse yedek dağıtım ağından dene */
+  if (typeof THREE === 'undefined') {
+    document.write('<scr' + 'ipt src="__THREE_FALLBACK__"><\/scr' + 'ipt>');
+  }
+</script>
+<script>
 (function(){
   "use strict";
 
