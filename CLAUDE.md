@@ -61,7 +61,17 @@ sayede kare kare çekilebiliyor.
   **Lisans: OpenRAIL — ticari kullanıma açık.**
 - Çocuk tonu, ses motorundan değil, sonradan **ffmpeg `rubberband`** ile
   veriliyor: `rubberband=pitch=1.15…1.25:formant=shifted:pitchq=quality`.
-- "ADG" harf harf okunsun diye TTS'e **"A De Ge"** yazılır; altyazıda "ADG".
+- **"ADG" yazımı — çözülmüş tuzak:** TTS'e **küçük harfle `a de ge`** yazılır.
+  Büyük harfli `A De Ge`, `ADG`, `A.D.G.`, `A-De-Ge` ve tüm ses stilleri
+  **"A de ce"** diye okunuyor (müşteri bunu fark etti). Küçük harf düzeltiyor.
+  Altyazıda yine "ADG Yapı" yazar — `voice.py` seslendirme metni ile altyazı
+  metnini ayrı tutar. Bunları yeniden deneme, hepsi denendi.
+- **Kalite kapısı (zorunlu):** üretim rastlantısal, aynı metin her seferinde
+  aynı çıkmıyor. `voice.py` her repliği 5 kez üretir, `asr.py` (faster-whisper
+  `small`, Türkçe) ile dinler, beklenen metne en yakın olanı seçer; "adg"
+  duyulmayan denemeler elenir. Çıktıyı kulağınla doğrulayamadığın için bu
+  adımı kaldırma. MP4 hazır olduğunda da son dosyadan bir kez daha dinlet:
+  `ffmpeg -ss 23.2 -t 1.7 -i film.mp4 -vn -ac 1 -ar 16000 chk.wav && python3 asr.py chk.wav`
 - **Kullanılmayacaklar ve nedenleri:**
   - *Piper `tr_TR-dfki-medium`*: tek Türkçe Piper sesi ama veri seti
     **CC BY-NC-SA 4.0**, yani ticari reklamda kullanılamaz. İndirmeyi dene bile,

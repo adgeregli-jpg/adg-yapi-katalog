@@ -9,7 +9,8 @@ Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE
 |---|---|
 | `film.src.html` | Filmin tek kaynağı: 3B sahne, müzik, kumanda, 2B üst katman. İçinde `__THREE_SRC__` ve `__VOICES__` yer tutucuları var. |
 | `build.py` | Yer tutucuları doldurup üç sürüm üretir. Replik zamanları (`AT`) burada. |
-| `voice.py` | Replikleri Supertonic 3 ile seslendirir, çocuk tonuna çeker, `ses/` altına yazar. |
+| `voice.py` | Replikleri Supertonic 3 ile seslendirir, çocuk tonuna çeker, `ses/` altına yazar. Her repliği 5 kez üretip konuşma tanımayla en doğrusunu seçer. |
+| `asr.py` | Üretilen sesi faster-whisper ile yazıya döker — kulak yerine geçen doğrulama aracı. `python3 asr.py ses/l4.wav` |
 | `music.js` | Sadece müziği çevrim dışı render eder (`aud/music.wav`). Hızlı deneme için. |
 | `peek.js` | Verilen saniyelerin karelerini PNG olarak çeker. Sahne ayarı için. |
 | `capture.js` | Müziği render eder, 960 kareyi tek tek çeker. |
@@ -26,6 +27,7 @@ Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE
 
 ```bash
 pip install supertonic                 # sinirsel Türkçe TTS (ONNX, OpenRAIL)
+pip install faster-whisper             # üretilen sesi doğrulamak için (asr.py)
 npm install three@0.150.1              # yerel çekim için
 mkdir -p build frames aud
 cp node_modules/three/build/three.min.js build/
@@ -79,8 +81,11 @@ karışımında ayrıca seviye otomasyonu yapmaya gerek yok.
 ## Sık yapılan değişiklikler
 
 **Replik metni / sesi:** `voice.py` içindeki `LINES` listesi — her satırda
-seslendirilecek metin, altyazı metni, ses stili (`F1–F5`, `M1–M5`), hız ve perde
-kaldırma oranı var. Perde ne kadar yüksekse ses o kadar çocuksu; 1.15 hafif,
+seslendirilecek metin, altyazı metni, **tanımanın duyması beklenen metin**,
+ses stili (`F1–F5`, `M1–M5`), hız ve perde kaldırma oranı var. Beklenen metin
+kalite kapısı için şart: üretim rastlantısal olduğundan her replik 5 kez
+üretilip en doğru duyulanı seçiliyor. Marka adı TTS'e **küçük harfle
+`a de ge`** yazılmalı — büyük harf "A de ce" diye okunuyor. Perde ne kadar yüksekse ses o kadar çocuksu; 1.15 hafif,
 1.25 belirgin. Sonra 1 → 2 → 4 → 5 adımları.
 
 **Replik zamanı:** `build.py` içindeki `AT` ve 5. adımdaki `adelay`
