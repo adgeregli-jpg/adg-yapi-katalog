@@ -11,6 +11,8 @@ Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE
 | `build.py` | Yer tutucuları doldurup üç sürüm üretir. Replik zamanları (`AT`) burada. |
 | `voice.py` | Replikleri Supertonic 3 ile seslendirir, çocuk tonuna çeker, `ses/` altına yazar. Her repliği 5 kez üretip konuşma tanımayla en doğrusunu seçer. |
 | `asr.py` | Üretilen sesi faster-whisper ile yazıya döker — kulak yerine geçen doğrulama aracı. `python3 asr.py ses/l4.wav` |
+| `band.py` | Bant enerjilerini ölçer (çamur / gövde / anlaşılırlık / hava). Boğukluk kontrolü: `python3 band.py ses/l2.wav` |
+| `partial.js` | Yalnız belirli kare aralığını yeniden çizer: `node partial.js 575 625` |
 | `music.js` | Sadece müziği çevrim dışı render eder (`aud/music.wav`). Hızlı deneme için. |
 | `peek.js` | Verilen saniyelerin karelerini PNG olarak çeker. Sahne ayarı için. |
 | `capture.js` | Müziği render eder, 960 kareyi tek tek çeker. |
@@ -60,9 +62,9 @@ ffmpeg -y -i aud/music.wav -i aud/l1.wav -i aud/l2.wav -i aud/l3.wav -i aud/l4.w
  [3]aformat=channel_layouts=stereo,adelay=20700|20700[v3];\
  [4]aformat=channel_layouts=stereo,adelay=23200|23200[v4];\
  [5]aformat=channel_layouts=stereo,adelay=25950|25950[v5];\
- [v1][v2][v3][v4][v5]amix=inputs=5:normalize=0,volume=1.3,apad=whole_dur=33[vo];\
+ [v1][v2][v3][v4][v5]amix=inputs=5:normalize=0,volume=1.6,apad=whole_dur=33[vo];\
  [vo]asplit=2[vmix][vsc];\
- [0][vsc]sidechaincompress=threshold=0.025:ratio=7:attack=20:release=380[mus];\
+ [0][vsc]sidechaincompress=threshold=0.012:ratio=14:attack=12:release=330[mus];\
  [mus][vmix]amix=inputs=2:normalize=0,volume=0.9,alimiter=limit=0.9,afade=t=out:st=31.5:d=0.5[a]" \
  -map "[a]" -t 32 -ar 44100 -ac 2 aud/mix.wav
 
@@ -100,12 +102,23 @@ Değişikliği `peek.js` ile tek karede kontrol et, sonra çek.
 MIDI numaralarıyla. Sadece müziği denemek için `node music.js` + `ffmpeg
 -af volumedetect` ile seviye bak.
 
-## Ses seviyesi ölçütü
+## Ses ölçütleri
 
-Her repliğin tepe seviyesi −3 dB civarı, bölümlerin ortalama seviyesi
-−17 … −18 dB olmalı. `max_volume: 0.0 dB` görürsen kırpma var demektir,
-kazancı düşür — cızırtının kaynağı budur.
+**Seviye.** Her repliğin tepe seviyesi −3 dB civarı, bölümlerin ortalama
+seviyesi −17 … −18 dB olmalı. `max_volume: 0.0 dB` görürsen kırpma var
+demektir, kazancı düşür — cızırtının kaynağı budur.
 
 ```bash
 ffmpeg -ss 17.4 -t 2.2 -i ADG_Yapi_Kentsel_Donusum_3D.mp4 -vn -af volumedetect -f null /dev/null
+```
+
+**Netlik.** `python3 band.py ses/l2.wav` — "anlaşılırlık−çamur" farkı
+**−3 … 0 dB** olmalı. Daha aşağısı boğuk duyulur. Alt-ortayı (200–500 Hz)
+yükselterek "gövde" eklemeye çalışma, boğukluk oradan gelir.
+
+**Okunuş.** MP4 bitince `medium` modelle beş repliği de dinlet:
+
+```python
+from faster_whisper import WhisperModel   # small ince ayrımlarda kararsız
+m = WhisperModel("medium", device="cpu", compute_type="int8")
 ```

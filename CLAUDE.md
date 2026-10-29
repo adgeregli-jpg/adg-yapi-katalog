@@ -67,11 +67,20 @@ sayede kare kare çekilebiliyor.
   Altyazıda yine "ADG Yapı" yazar — `voice.py` seslendirme metni ile altyazı
   metnini ayrı tutar. Bunları yeniden deneme, hepsi denendi.
 - **Kalite kapısı (zorunlu):** üretim rastlantısal, aynı metin her seferinde
-  aynı çıkmıyor. `voice.py` her repliği 5 kez üretir, `asr.py` (faster-whisper
-  `small`, Türkçe) ile dinler, beklenen metne en yakın olanı seçer; "adg"
-  duyulmayan denemeler elenir. Çıktıyı kulağınla doğrulayamadığın için bu
-  adımı kaldırma. MP4 hazır olduğunda da son dosyadan bir kez daha dinlet:
-  `ffmpeg -ss 23.2 -t 1.7 -i film.mp4 -vn -ac 1 -ar 16000 chk.wav && python3 asr.py chk.wav`
+  aynı çıkmıyor. `voice.py` her repliği 8 kez üretir, `asr.py` (faster-whisper
+  `small`, Türkçe) ile dinler, beklenen metne en yakın olanı seçer. Beş harf ve
+  üzeri her anahtar kelime duyulmalı, "adg" duyulmayan deneme elenir. Çıktıyı
+  kulağınla doğrulayamadığın için bu adımı kaldırma.
+  Tek replik yenilemek için: `python3 voice.py l2`.
+- **Tanıma motorunun sınırı:** `small` modeli ince ayrımlarda kararsız
+  ("yaşlı"/"yaşta" gibi). Küçük farklarda ona bakıp ses zincirini değiştirme —
+  önce `medium` modelle doğrula. Son MP4'ü bitirince mutlaka bir kez
+  `medium` ile dinlet; beş replik de doğru çıkmalı.
+- **Netlik (boğukluk şikâyeti geldi, çözüldü):** ham çıktıda anlaşılırlık bandı
+  (2–6 kHz) çamur bandından (200–500 Hz) 8–11 dB aşağıdaydı. `band.py` bu farkı
+  ölçer; hedef **−3 … 0 dB**. Zincirde 320 Hz −3.5, 3 kHz +6.5, 5.2 kHz +3.5 ve
+  8 kHz'de +4.5 raf var; uzun cümleler için satır başına ek ünsüz desteği
+  (`LINES` içindeki son kolon). Alt-ortayı yükseltme — boğukluğun sebebi oydu.
 - **Kullanılmayacaklar ve nedenleri:**
   - *Piper `tr_TR-dfki-medium`*: tek Türkçe Piper sesi ama veri seti
     **CC BY-NC-SA 4.0**, yani ticari reklamda kullanılamaz. İndirmeyi dene bile,
