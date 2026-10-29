@@ -117,7 +117,7 @@
   </div>
 
   <h1>Mahalle <em>yeniden</em> doğuyor</h1>
-  <p class="lede">Çamurlu sokaklar ve yorgun binalarla açılan, kentsel dönüşümle biten 25 saniyelik tanıtım animasyonu. Her kare kodla çizilir, iki müzik de tarayıcıda üretilir: açılışta gergin bir uğultu, dönüşümden sonra neşeli bir tema.</p>
+  <p class="lede">Çamurlu sokaklar ve yorgun binalarla açılan, kentsel dönüşümle biten 27 saniyelik tanıtım animasyonu. Çocuklar konuşuyor, her kare kodla çiziliyor, iki müzik de tarayıcıda üretiliyor: açılışta gergin bir uğultu, dönüşümden sonra neşeli bir tema.</p>
 
   <div class="stage">
     <canvas id="film" width="1600" height="900" aria-label="ADG Yapı kentsel dönüşüm animasyonu"></canvas>
@@ -127,7 +127,7 @@
           <svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true"><path d="M2 2 L28 17 L2 32 Z" fill="#fff"/></svg>
         </span>
         <span class="veil-label">Sesli oynat</span>
-        <span class="veil-sub">25 saniye · müzik dahil</span>
+        <span class="veil-sub">27 saniye · müzik ve çocuk sesleri</span>
       </span>
     </button>
   </div>
@@ -147,9 +147,9 @@
       <p>Yağmur, su birikintileri, çatlamış cepheler ve eğik duran eski bloklar. Şimşekler sahneyi aydınlatıyor.</p>
     </div>
     <div class="beat">
-      <span class="at">00:05</span>
+      <span class="at">00:06</span>
       <h2>Camdaki çocuk</h2>
-      <p>Işığı yanan tek pencerede, elini cama dayamış mutsuz bir çocuk dışarıyı izliyor.</p>
+      <p>Işığı yanan tek pencerede, elini cama dayamış mutsuz bir çocuk: “Keşke bizim de yeni evimiz olsa...”</p>
     </div>
     <div class="beat">
       <span class="at">00:09</span>
@@ -157,13 +157,14 @@
       <p>ADG Yapı logosu sahneye giriyor; vinç geliyor, eski bloklar toz içinde iniyor, yeni kuleler yükseliyor.</p>
     </div>
     <div class="beat">
-      <span class="at">00:15</span>
+      <span class="at">00:16</span>
       <h2>Yeni mahalle</h2>
-      <p>Güneş, yeşil alan, koşan ve gülen çocuklar, yeni binaların önünde mutlu aileler.</p>
+      <p>Güneş, yeşil alan, mutlu aileler. Çocuklar konuşuyor: “Arkadaşlar, her yaşlı ev dönüşmeli!” — “Bizim mahalle çok güzel oldu!” — “Teşekkürler ADG Yapı!”</p>
     </div>
   </div>
 
   <p class="note"><b>Nasıl kullanılır:</b> Dosya tek parça HTML — sunucu, video dosyası veya harici kütüphane gerektirmez. Sitede <code>animasyon.html</code> olarak yayınlanabilir ya da ekran kaydı alınarak sosyal medya videosu olarak paylaşılabilir. Ses, tarayıcı kuralları gereği yalnızca oynat düğmesine basıldıktan sonra başlar.</p>
+  <p class="note"><b>Çocuk sesleri:</b> Replikler konuşma baloncuklarında her zaman yazılı görünür. Cihazda Türkçe bir konuşma sesi varsa replikler tiz, çocuksu bir tonla seslendirilir; yoksa çizgi film tarzı sevimli bir “konuşma” sesine düşer. Seslendirme sırasında müzik kendiliğinden kısılır.</p>
 </div>
 
 <script>
@@ -174,7 +175,7 @@
   const cv = document.getElementById('film');
   const ctx = cv.getContext('2d');
   const W = 1600, H = 900, GY = 620;          // sahne ölçüleri, zemin çizgisi
-  const DUR = 25.0;                            // toplam süre (sn)
+  const DUR = 27.0;                            // toplam süre (sn)
   const TRANSFORM = 10.6;                      // neşeli müziğin girdiği an
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -217,12 +218,33 @@
   ];
   const FLASH = [3.45, 6.25];
   const CAPS = [
-    {a:1.7,  b:5.1,  s:'Çamurlu sokaklar, yorgun binalar.'},
-    {a:5.4,  b:8.5,  s:'Camın ardında mutsuz bir çocukluk.'},
-    {a:9.7,  b:13.3, s:'ADG Yapı ile kentsel dönüşüm başlıyor.'},
-    {a:13.8, b:17.0, s:'Yeni yapılar yükseliyor.'},
-    {a:17.3, b:20.3, s:'Çocuklar gülüyor, aileler mutlu.'}
+    {a:1.7,  b:5.0,  s:'Çamurlu sokaklar, yorgun binalar.'},
+    {a:5.2,  b:8.4,  s:'Camın ardında mutsuz bir çocukluk.'},
+    {a:9.7,  b:13.2, s:'ADG Yapı ile kentsel dönüşüm başlıyor.'},
+    {a:13.7, b:16.1, s:'Yeni yapılar yükseliyor.'}
   ];
+  // çocukların replikleri (baloncuk + ses)
+  const DIALOG = [
+    {t: 6.0,  dur:2.3, who:'w',  mood:'sad',   s:'Keşke bizim de yeni evimiz olsa...'},
+    {t:16.3,  dur:2.4, who:'k1', mood:'happy', s:'Arkadaşlar, her yaşlı ev dönüşmeli!'},
+    {t:18.9,  dur:2.3, who:'k2', mood:'happy', s:'Bizim mahalle çok güzel oldu!'},
+    {t:21.5,  dur:1.8, who:'fc', mood:'happy', s:'Teşekkürler ADG Yapı!'}
+  ];
+  // konuşanların yerleri (kidsScene ile aynı formüller)
+  const RUN1X = function(u){ return 940 + Math.sin(u*0.75)*70; };
+  const RUN2X = function(u){ return 1180 + Math.sin(u*0.75+2.2)*80; };
+  const FAMX  = function(u){ return 232 + u*10; };
+  function speakerAt(who, t){
+    const u = t - 14.0, feet = GY+218;
+    if (who === 'w')  return {x: 690, y: 438};
+    if (who === 'k1') return {x: RUN1X(u), y: feet - 108*1.14 - 8};
+    if (who === 'k2') return {x: RUN2X(u), y: feet - 108*1.08 - 8};
+    return {x: FAMX(u)+68, y: feet - 108*0.88 - 8};   // ailenin çocuğu
+  }
+  function talkingNow(t){
+    for (const d of DIALOG) if (t >= d.t && t <= d.t + d.dur) return d.who;
+    return null;
+  }
 
   /* ======================= logo ======================= */
   // Kurumsal kimlikteki ince çizgi "A" markası + ADG / Y A P I yazısı
@@ -257,14 +279,20 @@
   const LOGO_W = 196 + 300;  // yaklaşık toplam genişlik (ölçek 1)
 
   /* ======================= insan figürleri ======================= */
-  function happyFace(cx, cy, s, ink){
+  function happyFace(cx, cy, s, ink, talk){
     ctx.strokeStyle = ink; ctx.lineWidth = 2.1*s; ctx.lineCap='round';
     ctx.beginPath(); ctx.arc(cx-5.5*s, cy-2*s, 3.4*s, Math.PI*1.12, Math.PI*1.88); ctx.stroke();
     ctx.beginPath(); ctx.arc(cx+5.5*s, cy-2*s, 3.4*s, Math.PI*1.12, Math.PI*1.88); ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx, cy+2.2*s, 6.4*s, Math.PI*0.16, Math.PI*0.84); ctx.stroke();
+    if (talk){   // konuşurken açılıp kapanan ağız
+      const op = 2.4 + Math.abs(Math.sin(timeNow*17))*4.6;
+      ctx.fillStyle = ink;
+      ctx.beginPath(); ctx.ellipse(cx, cy+4.6*s, 5*s, op*0.5*s, 0, 0, 7); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(cx, cy+2.2*s, 6.4*s, Math.PI*0.16, Math.PI*0.84); ctx.stroke();
+    }
   }
   // y = ayak hizası, run: 0 yürüyüş / 1 koşu
-  function person(x, y, s, ph, shirt, pants, skin, hair, run, armUp){
+  function person(x, y, s, ph, shirt, pants, skin, hair, run, armUp, talk){
     const sw = Math.sin(ph);
     // zemin gölgesi
     ctx.fillStyle = 'rgba(28,46,18,.2)';
@@ -301,7 +329,7 @@
     ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(x, headY, headR, 0, 7); ctx.fill();
     ctx.fillStyle = hair; ctx.beginPath();
     ctx.arc(x, headY, headR, Math.PI*1.04, Math.PI*2.0); ctx.fill();
-    happyFace(x, headY+1*s, s, '#2a1c13');
+    happyFace(x, headY+1*s, s, '#2a1c13', talk);
     return {headY:headY, shY:shY, handY:shY+22*s};
   }
 
@@ -354,7 +382,7 @@
     }
   }
 
-  function oldBuildings(t, r, demo, childA){
+  function oldBuildings(t, r, demo, childA, spkNow){
     for (let i=0;i<OLD.length;i++){
       const b = OLD[i];
       const a = 1-demo;
@@ -407,11 +435,11 @@
       ctx.restore();
 
       // çocuğun penceresi
-      if (i === 2 && childA > 0.01) childWindow(b, t, childA*a);
+      if (i === 2 && childA > 0.01) childWindow(b, t, childA*a, spkNow === 'w');
     }
   }
 
-  function childWindow(b, t, a){
+  function childWindow(b, t, a, talk){
     const wx = b.x + 150, wy = GY - b.h + 128, ww = 104, wh = 116;
     ctx.save();
     ctx.globalAlpha = a;
@@ -432,7 +460,13 @@
     ctx.strokeStyle = 'rgba(248,226,188,.92)'; ctx.lineWidth = 2.6; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(cx-9, headY-3); ctx.lineTo(cx-3.5, headY-1); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx+9, headY-3); ctx.lineTo(cx+3.5, headY-1); ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx, headY+14, 7.5, Math.PI*1.18, Math.PI*1.82); ctx.stroke();
+    if (talk){
+      const op = 2.6 + Math.abs(Math.sin(t*16))*5.2;
+      ctx.fillStyle = 'rgba(248,226,188,.92)';
+      ctx.beginPath(); ctx.ellipse(cx, headY+10, 5.2, op*0.5, 0, 0, 7); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(cx, headY+14, 7.5, Math.PI*1.18, Math.PI*1.82); ctx.stroke();
+    }
     // cama dayalı el
     ctx.fillStyle = 'rgba(228,196,156,.85)';
     ctx.beginPath(); ctx.arc(cx+24, headY+30+sway, 8.5, 0, 7); ctx.fill();
@@ -642,14 +676,14 @@
     ctx.restore();
   }
 
-  function kidsScene(t, park){
+  function kidsScene(t, park, spk){
     if (park <= 0.01) return;
     ctx.save(); ctx.globalAlpha = park;
     const u = t - 14.0;
 
     // top (zıplıyor)
-    const bx = 1056 + Math.sin(u*0.9)*58;
-    const by = GY+210 - Math.abs(Math.sin(u*3.1))*74;
+    const bx = 1062 + Math.sin(u*0.9)*44;
+    const by = GY+212 - Math.abs(Math.sin(u*3.1))*56;
     ctx.fillStyle='rgba(0,0,0,.18)';
     ctx.beginPath(); ctx.ellipse(bx, GY+218, 24, 6.5, 0, 0, 7); ctx.fill();
     ctx.fillStyle='#ff6a13'; ctx.beginPath(); ctx.arc(bx, by, 20, 0, 7); ctx.fill();
@@ -658,22 +692,22 @@
     ctx.beginPath(); ctx.arc(bx, by, 20, Math.PI*1.15+u, Math.PI*1.85+u); ctx.stroke();
 
     // aile: anne + baba + aralarında çocuk, el ele
-    const fx = 232 + u*10;
+    const fx = FAMX(u);
     const feet = GY+218;
-    const p1 = person(fx,      feet, 1.38, u*2.0, '#2f4a6b', '#263a52', '#e8c39c', '#2b2119', 0, false);
-    const p3 = person(fx+132,  feet, 1.32, u*2.0+0.5, '#7a3b5e', '#3a2440', '#f0cda8', '#1f1710', 0, false);
-    const p2 = person(fx+68,   feet, 0.88, u*2.6+1.1, '#ffb43d', '#4a6b3a', '#f3d6b2', '#2b1d12', 0, false);
+    const p1 = person(fx,      feet, 1.38, u*2.0, '#2f4a6b', '#263a52', '#e8c39c', '#2b2119', 0, false, false);
+    const p3 = person(fx+132,  feet, 1.32, u*2.0+0.5, '#7a3b5e', '#3a2440', '#f0cda8', '#1f1710', 0, false, false);
+    const p2 = person(fx+68,   feet, 0.88, u*2.6+1.1, '#ffb43d', '#4a6b3a', '#f3d6b2', '#2b1d12', 0, false, spk==='fc');
     // el ele
     ctx.strokeStyle='#f0cda8'; ctx.lineWidth=5; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(fx+18, p1.handY+6); ctx.lineTo(fx+54, p2.handY); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(fx+82, p2.handY); ctx.lineTo(fx+116, p3.handY+6); ctx.stroke();
 
     // koşan çocuklar
-    person(940 + Math.sin(u*0.75)*70, feet, 1.14, u*7.4, '#2e9c8e', '#214f63', '#f1d2ad', '#241a12', 1, false);
-    person(1180 + Math.sin(u*0.75+2.2)*80, feet, 1.08, u*7.4+2.0, '#ffd24a', '#3c5d8a', '#e9c096', '#1e1610', 1, true);
+    person(RUN1X(u), feet, 1.14, u*7.4, '#2e9c8e', '#214f63', '#f1d2ad', '#241a12', 1, false, spk==='k1');
+    person(RUN2X(u), feet, 1.08, u*7.4+2.0, '#ffd24a', '#3c5d8a', '#e9c096', '#1e1610', 1, true, spk==='k2');
     // balonlu çocuk
     const bkx = 1400;
-    const kid3 = person(bkx, feet, 1.02, u*2.2, '#ff6a13', '#4b3b6b', '#f3d6b2', '#2a1d14', 0, true);
+    const kid3 = person(bkx, feet, 1.02, u*2.2, '#ff6a13', '#4b3b6b', '#f3d6b2', '#2a1d14', 0, true, false);
     const balY = kid3.shY - 104 + Math.sin(u*1.7)*8;
     ctx.strokeStyle='rgba(60,50,40,.7)'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.moveTo(bkx+22, kid3.shY-18); ctx.quadraticCurveTo(bkx+34, balY+40, bkx+30, balY+22); ctx.stroke();
@@ -681,6 +715,59 @@
     ctx.fillStyle='rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(bkx+24, balY-7, 5, 7, -0.4, 0, 7); ctx.fill();
 
     ctx.restore();
+  }
+
+  /* ======================= konuşma baloncukları ======================= */
+  function wrapText(s, maxw){
+    const words = s.split(' '); const lines = []; let cur = '';
+    for (const w of words){
+      const test = cur ? cur+' '+w : w;
+      if (ctx.measureText(test).width > maxw && cur){ lines.push(cur); cur = w; }
+      else cur = test;
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  function bubbles(t){
+    for (const d of DIALOG){
+      const a = sstep(d.t-0.25, d.t+0.1, t) * (1 - sstep(d.t+d.dur, d.t+d.dur+0.45, t));
+      if (a <= 0.01) continue;
+      const pop = 1 - Math.pow(1 - sstep(d.t-0.25, d.t+0.22, t), 3);
+      const p = speakerAt(d.who, t);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.font = '500 34px Jost, "Trebuchet MS", sans-serif';
+      ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+      const lines = wrapText(d.s, 430);
+      let bw = 0; for (const l of lines) bw = Math.max(bw, ctx.measureText(l).width);
+      bw += 44; const bh = lines.length*42 + 30;
+      let bx = clamp(p.x - bw/2, 24, W - bw - 24);
+      const by = p.y - bh - 20;
+      // açılış sıçraması
+      ctx.translate(p.x, p.y - 14);
+      ctx.scale(lerp(0.82, 1, pop), lerp(0.74, 1, pop));
+      ctx.translate(-p.x, -(p.y - 14));
+      // kuyruk
+      ctx.fillStyle = d.mood === 'sad' ? '#f4ece2' : '#ffffff';
+      ctx.strokeStyle = d.mood === 'sad' ? 'rgba(90,72,56,.5)' : '#ff6a13';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(p.x - 16, by + bh - 2); ctx.lineTo(p.x + 2, p.y - 8); ctx.lineTo(p.x + 18, by + bh - 2);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      // kutu
+      ctx.shadowColor = 'rgba(16,10,6,.3)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 5;
+      rrect(bx, by, bw, bh, 20); ctx.fill();
+      ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+      rrect(bx, by, bw, bh, 20); ctx.stroke();
+      // kuyruğun içini tekrar doldur (çizgi görünmesin)
+      ctx.beginPath();
+      ctx.moveTo(p.x - 12, by + bh - 4); ctx.lineTo(p.x + 2, p.y - 14); ctx.lineTo(p.x + 14, by + bh - 4);
+      ctx.closePath(); ctx.fill();
+      // metin
+      ctx.fillStyle = d.mood === 'sad' ? '#4a3a2c' : '#2a1b10';
+      for (let i=0;i<lines.length;i++) ctx.fillText(lines[i], bx+22, by+44+i*42);
+      ctx.restore();
+    }
   }
 
   /* ======================= çizim: üst katman ======================= */
@@ -725,12 +812,12 @@
       ctx.restore();
     }
     // köşe filigranı
-    const wa = sstep(12.2, 13.0, t) * (1 - sstep(20.4, 20.9, t));
+    const wa = sstep(12.2, 13.0, t) * (1 - sstep(23.2, 23.7, t));
     if (wa > 0.01) drawLogo(W - 268, 44, 0.30, 'rgba(255,255,255,.92)', wa*0.9);
   }
 
   function endcard(t){
-    const a = sstep(20.5, 21.3, t);
+    const a = sstep(23.4, 24.2, t);
     if (a <= 0.01) return;
     ctx.save(); ctx.globalAlpha = a;
     const g = ctx.createLinearGradient(0,0,W,H);
@@ -738,11 +825,11 @@
     ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
     ctx.restore();
 
-    const la = sstep(21.0, 21.8, t);
+    const la = sstep(23.9, 24.7, t);
     const s = 0.86;
     drawLogo(W/2 - LOGO_W*s/2, 272, s, '#ffffff', la);
 
-    const ta = sstep(21.8, 22.5, t);
+    const ta = sstep(24.7, 25.4, t);
     if (ta > 0.01){
       ctx.save(); ctx.globalAlpha = ta;
       ctx.fillStyle='#ffb98a'; ctx.fillRect(W/2-150, 540, 300*ta, 3);
@@ -751,7 +838,7 @@
       ctx.fillText('Mahalleyi yeniden inşa ediyoruz.', W/2, 626);
       ctx.restore();
     }
-    const ca = sstep(22.6, 23.3, t);
+    const ca = sstep(25.5, 26.1, t);
     if (ca > 0.01){
       ctx.save(); ctx.globalAlpha = ca;
       ctx.textAlign='center'; ctx.fillStyle='rgba(255,236,220,.88)';
@@ -792,17 +879,19 @@
     const rise   = sstep(10.2, 14.4, t);
     const park   = sstep(13.8, 15.4, t);
     const childA = 1 - sstep(8.5, 9.2, t);
+    const spk    = talkingNow(t);
 
     ctx.clearRect(0,0,W,H);
     sky(r);
     crane(t);
-    oldBuildings(t, r, demo, childA);
+    oldBuildings(t, r, demo, childA, spk);
     newTowers(t, rise);
     dust(t, demo);
     ground(t, r, park);
     trees(r);
-    kidsScene(t, park);
+    kidsScene(t, park, spk);
     rain(t, rainA);
+    bubbles(t);
     captions(t);
     logoBeat(t);
     overlays(t, r);
@@ -810,7 +899,7 @@
   }
 
   /* ======================= ses ======================= */
-  let ac = null, master = null, t0 = 0, muted = false;
+  let ac = null, master = null, musicGain = null, t0 = 0, muted = false;
 
   function noiseBuffer(sec){
     const b = ac.createBuffer(1, Math.floor(ac.sampleRate*sec), ac.sampleRate);
@@ -825,7 +914,7 @@
     gn.gain.setValueAtTime(0.0001, st);
     gn.gain.exponentialRampToValueAtTime(Math.max(g,0.0002), st+0.014);
     gn.gain.exponentialRampToValueAtTime(0.0001, st+dur);
-    o.connect(gn); gn.connect(dest||master);
+    o.connect(gn); gn.connect(dest||musicGain||master);
     o.start(st); o.stop(st+dur+0.06);
   }
   function noiseHit(st, dur, g, type, f, q, dest){
@@ -835,7 +924,7 @@
     gn.gain.setValueAtTime(0.0001, st);
     gn.gain.exponentialRampToValueAtTime(g, st+0.012);
     gn.gain.exponentialRampToValueAtTime(0.0001, st+dur);
-    s.connect(bf); bf.connect(gn); gn.connect(dest||master);
+    s.connect(bf); bf.connect(gn); gn.connect(dest||musicGain||master);
     s.start(st); s.stop(st+dur+0.05);
     return bf;
   }
@@ -847,7 +936,7 @@
     dg.gain.exponentialRampToValueAtTime(0.16, T+2.2);
     dg.gain.setValueAtTime(0.16, T+7.4);
     dg.gain.exponentialRampToValueAtTime(0.0001, T+10.6);
-    lp.connect(dg); dg.connect(master);
+    lp.connect(dg); dg.connect(musicGain);
     [55, 77.78, 55.6].forEach(function(f,i){
       const o = ac.createOscillator(); o.type = i===2?'square':'sawtooth'; o.frequency.value=f;
       const og = ac.createGain(); og.gain.value = i===2?0.18:0.6;
@@ -873,7 +962,7 @@
     rg.gain.exponentialRampToValueAtTime(0.10, T+1.4);
     rg.gain.setValueAtTime(0.10, T+7.4);
     rg.gain.exponentialRampToValueAtTime(0.0001, T+10.4);
-    rs.connect(hp); hp.connect(rg); rg.connect(master);
+    rs.connect(hp); hp.connect(rg); rg.connect(musicGain);
     rs.start(T); rs.stop(T+10.8);
 
     // gök gürültüsü
@@ -895,7 +984,7 @@
     const g = ac.createGain();
     g.gain.setValueAtTime(0.0001, T+0.55); g.gain.exponentialRampToValueAtTime(0.5, T+0.6);
     g.gain.exponentialRampToValueAtTime(0.0001, T+2.0);
-    o.connect(g); g.connect(master); o.start(T+0.55); o.stop(T+2.1);
+    o.connect(g); g.connect(musicGain); o.start(T+0.55); o.stop(T+2.1);
     noiseHit(T+0.55, 1.2, 0.2, 'lowpass', 420, 0.7);
   }
 
@@ -918,7 +1007,7 @@
       [0,1,2,3,4,3,2,1],
       [4,3,2,3,4,5,4,3]
     ];
-    const bus = ac.createGain(); bus.gain.value = 0.0001; bus.connect(master);
+    const bus = ac.createGain(); bus.gain.value = 0.0001; bus.connect(musicGain);
     bus.gain.setValueAtTime(0.0001, T);
     bus.gain.exponentialRampToValueAtTime(0.9, T+0.9);
 
@@ -952,7 +1041,7 @@
       n = b;
     }
     // kapanış akoru (son kart)
-    const endT = T + 11.9;
+    const endT = T + 13.4;
     bus.gain.setValueAtTime(0.9, endT-0.2);
     bus.gain.exponentialRampToValueAtTime(0.0001, endT+0.3);
     [130.81, 261.63, 329.63, 392.00, 523.25].forEach(function(f,i){
@@ -961,11 +1050,93 @@
     noiseHit(endT, 1.6, 0.1, 'highpass', 4200, 0.7);
   }
 
+  /* ------- çocuk sesleri ------- */
+  // Türkçe bir sistem sesi varsa onu tiz ve hızlı kullanır; yoksa çizgi film
+  // tarzı "blip" sesine düşer. Replikler her hâlükârda baloncukta yazılı.
+  let ttsVoice = null;
+  function pickVoice(){
+    if (!('speechSynthesis' in window)) return;
+    try {
+      const vs = window.speechSynthesis.getVoices() || [];
+      ttsVoice = vs.filter(function(v){ return /^tr([-_]|$)/i.test(v.lang||''); })[0] || null;
+    } catch(e){}
+  }
+  if ('speechSynthesis' in window){
+    pickVoice();
+    try { window.speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch(e){}
+  }
+
+  function duck(sec){
+    if (!musicGain || !ac) return;
+    const n = ac.currentTime;
+    const g = musicGain.gain;
+    try {
+      g.cancelScheduledValues(n);
+      g.setValueAtTime(g.value, n);
+      g.linearRampToValueAtTime(0.34, n+0.12);
+      g.setValueAtTime(0.34, n+sec);
+      g.linearRampToValueAtTime(1, n+sec+0.35);
+    } catch(e){}
+  }
+
+  function blipVoice(text, dur, mood){
+    if (!ac) return;
+    const vowels = (text.match(/[aeıioöuüAEIİOÖUÜ]/g) || []).length;
+    const syl = Math.max(3, Math.min(13, vowels));
+    const step = dur / syl;
+    const scale = mood === 'sad' ? [0,-2,-4,-5,-7] : [0,4,2,7,5,9];
+    const base = mood === 'sad' ? 430 : 600;
+    const n = ac.currentTime + 0.03;
+    for (let i=0;i<syl;i++){
+      const st = n + i*step;
+      const f = base * Math.pow(2, scale[(i*2+1) % scale.length]/12);
+      const o = ac.createOscillator(); o.type = 'square';
+      o.frequency.setValueAtTime(f*0.9, st);
+      o.frequency.linearRampToValueAtTime(f, st+step*0.28);
+      const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = mood==='sad'?1250:1750; lp.Q.value = 5;
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, st);
+      g.gain.exponentialRampToValueAtTime(mood==='sad'?0.1:0.15, st+0.022);
+      g.gain.exponentialRampToValueAtTime(0.0001, st+step*0.72);
+      o.connect(lp); lp.connect(g); g.connect(master);
+      o.start(st); o.stop(st+step*0.78);
+      const lfo = ac.createOscillator(); lfo.frequency.value = 15;
+      const lg = ac.createGain(); lg.gain.value = 11;
+      lfo.connect(lg); lg.connect(o.frequency); lfo.start(st); lfo.stop(st+step*0.78);
+    }
+  }
+
+  function say(d){
+    duck(d.dur);
+    if (muted) return;
+    if (ttsVoice && 'speechSynthesis' in window){
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(d.s);
+        u.voice = ttsVoice; u.lang = ttsVoice.lang || 'tr-TR';
+        u.pitch = d.mood === 'sad' ? 1.45 : 1.95;   // sevimli, çocuksu ton
+        u.rate  = d.mood === 'sad' ? 0.92 : 1.06;
+        u.volume = 1;
+        let began = false;
+        u.onstart = function(){ began = true; };
+        u.onerror = function(){ if (!began){ began = true; blipVoice(d.s, d.dur*0.82, d.mood); } };
+        window.speechSynthesis.speak(u);
+        setTimeout(function(){
+          if (!began){ began = true; try{ window.speechSynthesis.cancel(); }catch(e){} blipVoice(d.s, d.dur*0.82, d.mood); }
+        }, 600);
+        return;
+      } catch(e){}
+    }
+    blipVoice(d.s, d.dur*0.82, d.mood);
+  }
+  function stopVoice(){ if ('speechSynthesis' in window){ try{ window.speechSynthesis.cancel(); }catch(e){} } }
+
   function buildAudio(){
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ac = new AC();
     master = ac.createGain(); master.gain.value = muted ? 0 : 0.8; master.connect(ac.destination);
+    musicGain = ac.createGain(); musicGain.gain.value = 1; musicGain.connect(master);
     t0 = ac.currentTime + 0.14;
     try {
       scheduleScary(t0);
@@ -997,6 +1168,11 @@
       const t = now();
       lastT = t;
       render(t);
+      // repliklerin sesini zamanı gelince tetikle
+      for (let i=0;i<DIALOG.length;i++){
+        const d = DIALOG[i];
+        if (!d._said && t >= d.t && t < d.t + 0.5){ d._said = true; say(d); }
+      }
       bar.style.width = (t/DUR*100).toFixed(2)+'%';
       clock.textContent = fmt(t)+' / '+fmt(DUR);
       if (t >= DUR - 0.01) finish();
@@ -1006,12 +1182,14 @@
   function finish(){
     playing = false; ended = true;
     btnToggle.textContent = 'Tekrar oynat';
+    stopVoice();
     if (ac) { try { ac.suspend(); } catch(e){} }
   }
   function start(){
     ended = false;
     if (!ac) { if (!buildAudio()) fallbackStart = performance.now()/1000; }
     if (ac) { ac.resume().catch(function(){}); }
+    if ('speechSynthesis' in window){ try { window.speechSynthesis.resume(); } catch(e){} }
     playing = true;
     veil.hidden = true;
     btnToggle.textContent = 'Duraklat';
@@ -1019,10 +1197,13 @@
   function pause(){
     playing = false;
     btnToggle.textContent = 'Oynat';
+    if ('speechSynthesis' in window){ try { window.speechSynthesis.pause(); } catch(e){} }
     if (ac) { try { ac.suspend(); } catch(e){} }
   }
   function restart(){
-    if (ac){ try { ac.close(); } catch(e){} ac = null; }
+    stopVoice();
+    if (ac){ try { ac.close(); } catch(e){} ac = null; musicGain = null; }
+    for (let i=0;i<DIALOG.length;i++) DIALOG[i]._said = false;
     lastT = 0; render(0);
     bar.style.width = '0%';
     start();
@@ -1036,6 +1217,7 @@
   btnRestart.addEventListener('click', restart);
   btnMute.addEventListener('click', function(){
     muted = !muted;
+    if (muted) stopVoice();
     if (master) master.gain.value = muted ? 0 : 0.8;
     btnMute.textContent = muted ? 'Sesi aç' : 'Sesi kapat';
     btnMute.setAttribute('aria-pressed', muted ? 'true' : 'false');
