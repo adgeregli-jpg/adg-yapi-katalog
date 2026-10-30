@@ -22,7 +22,7 @@ araştırmayı baştan yapma: aşağıdaki kararlar verilmiş, araçlar denenmi�
 | Dosya | Ne |
 |---|---|
 | `index.html` | Tanıtım sitesi. Film, sayfanın altında "Kentsel Dönüşüm Filmi" bölümünde (iletişimden hemen önce) oynar. Menüde ayrı animasyon başlığı yok; 3B sürüme videonun altından küçük bir bağlantıyla gidilir. |
-| `film-kapak.jpg` | Videonun kapak karesi (filmin 16.85. saniyesi, altyazısız). |
+| `film-kapak.jpg` | Videonun kapak karesi: kapanış kartı (50. saniye — logo, slogan, üç taahhüt). |
 | `basvuru.html` | Kentsel dönüşüm başvuru formu. |
 | `animasyon.html` | 3B filmin tarayıcıda çalışan sürümü (tek dosya, sesler gömülü). Sayfada yapım aşaması/teknik not yok — müşteri istemiyor, geri ekleme. |
 | `ADG_Yapi_Kentsel_Donusum_3D.mp4` | Filmin 55,5 sn'lik MP4 çıktısı (1280×720, 30 fps). |
