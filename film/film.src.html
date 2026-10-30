@@ -29,7 +29,7 @@
     max-width:1040px; margin:0 auto;
     padding-left:max(16px, env(safe-area-inset-left, 0px));
     padding-right:max(16px, env(safe-area-inset-right, 0px));
-    padding-block:28px 48px; display:flex; flex-direction:column; gap:22px;
+    padding-block:28px 40px; display:flex; flex-direction:column; gap:22px;
   }
   .masthead{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .brandline{ font-family:var(--font-display); font-weight:300; letter-spacing:.34em; font-size:.78rem; text-transform:uppercase; color:var(--ink-soft); }
@@ -87,7 +87,7 @@
   </div>
 
   <h1>Mahalle <em>yeniden</em> doğuyor</h1>
-  <p class="lede">32 saniyelik 3B çizgi film. Çamurlu, yağmurlu bir mahallede camdan bakan mutsuz bir çocukla açılıyor; kentsel dönüşümden sonra yeni binaların önünde gülen çocuklarla kapanıyor. Çocuklar Türkçe konuşuyor; müzik ukulele, marimba ve marakasla çalınan bir çocuk şarkısı.</p>
+  <p class="lede">Çamurlu, yağmurlu bir mahallede camdan bakan mutsuz bir çocukla açılıyor; kentsel dönüşümden sonra yeni binaların önünde gülen çocuklarla kapanıyor.</p>
 
   <div class="stage" id="stage">
     <canvas id="gl"></canvas>
@@ -112,31 +112,6 @@
     <div class="clock" id="clock">00:00 / 00:32</div>
   </div>
 
-  <div class="beats">
-    <div class="beat">
-      <span class="at">00:00</span>
-      <h2>Çamurlu mahalle</h2>
-      <p>Yağmur, su birikintileri, eğik duran yorgun bloklar. Kamera sokağın üzerinde süzülüyor, şimşek çakıyor.</p>
-    </div>
-    <div class="beat">
-      <span class="at">00:06</span>
-      <h2>Camdaki çocuk</h2>
-      <p>Yakın plan: elini cama dayamış çocuk. “Keşke bizim de yeni evimiz olsa.”</p>
-    </div>
-    <div class="beat">
-      <span class="at">00:10</span>
-      <h2>Dönüşüm</h2>
-      <p>ADG Yapı logosu, toz bulutu, eski bloklar iniyor; kamera yukarı kayarken yeni kuleler yükseliyor.</p>
-    </div>
-    <div class="beat">
-      <span class="at">00:17</span>
-      <h2>Yeni mahalle</h2>
-      <p>Yakın plan gülen çocuk: “Arkadaşlar, her yaşlı ev dönüşmeli!” — “Bizim mahalle çok güzel oldu!” — “Teşekkürler ADG Yapı!” Kapanışta çocuk sesiyle: “Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması… ADG Yapı!”</p>
-    </div>
-  </div>
-
-  <p class="note"><b>Nasıl kullanılır:</b> Sahne tarayıcıda gerçek zamanlı 3B olarak çiziliyor (three.js), müzik ve seslendirme dosyanın içinde gömülü. Aynı film <code>mp4</code> olarak da hazır; sosyal medyada ve sunumlarda onu kullanabilirsiniz.</p>
-  <p class="note"><b>Sesler:</b> Replikler Supertonic 3 (OpenRAIL lisanslı, cihaz üzerinde çalışan sinirsel ses motoru) ile Türkçe seslendirilip hafif perde kaldırmayla çocuk tonuna çekildi — başkasına ait bir çizgi film karakterinin sesi kullanılmadı. Müzik de aynı şekilde sıfırdan üretildi: açılışta yumuşak yaylılar ve timpani, dönüşümden sonra ukulele, marimba ve marakas.</p>
 </div>
 
 <script src="__THREE_SRC__"></script>
