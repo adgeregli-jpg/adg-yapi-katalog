@@ -53,7 +53,8 @@ CHAIN = ("highpass=f=90,"
          "acompressor=threshold=-20dB:ratio=2:attack=8:release=160:makeup=1.5,"
          "loudnorm=I=-17:TP=-3:LRA=11,"
          "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-50dB,"
-         "areverse,silenceremove=start_periods=1:start_silence=0.06:start_threshold=-50dB,areverse,"
+         "areverse,silenceremove=start_periods=1:start_silence=0.06:start_threshold=-50dB,"
+         "afade=t=in:st=0:d=0.04,areverse,"            # sonda yumuşak kapanış: tık yapmasın
          "afade=t=in:st=0:d=0.02")
 
 norm = lambda s: re.sub(r"[^\wçğıöşü ]", "", s.lower().replace("i̇", "i")).strip()

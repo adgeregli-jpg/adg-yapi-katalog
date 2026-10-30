@@ -1369,8 +1369,12 @@
     for (let i=0;i<len;i++) u8[i] = bin.charCodeAt(i);
     return u8.buffer;
   }
+  const noiseCache = new WeakMap();
   function noiseBuffer(ac, sec){
-    const b = ac.createBuffer(1, Math.max(1,Math.floor(ac.sampleRate*sec)), ac.sampleRate);
+    const c = noiseCache.get(ac) || {}; noiseCache.set(ac, c);
+    const key = Math.ceil(sec*4)/4;
+    if (c[key]) return c[key];
+    const b = c[key] = ac.createBuffer(1, Math.max(1,Math.floor(ac.sampleRate*key)), ac.sampleRate);
     const d = b.getChannelData(0);
     for (let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
     return b;
@@ -1465,7 +1469,9 @@
     /* ---- 1. bölüm: yağmurlu, hüzünlü mahalle ---- */
     const dark = ac.createGain(); dark.gain.value = 1; dark.connect(dest);
     // yumuşak tremololu yaylılar (üçgen dalga: vızıltısız)
-    [55, 65.4, 82.4].forEach(function(f,i){
+    // A1-E2-A2: temiz beşli ve oktav. Eskiden 55 ile 65,4 Hz yan yanaydı; aradaki
+    // fark saniyede 10,4 kez vuruş yapıp sesi kesik kesik/titrek gösteriyordu.
+    [55, 82.5, 110].forEach(function(f,i){
       const o = ac.createOscillator(); o.type='triangle'; o.frequency.value=f;
       const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=700; lp.Q.value=1.2;
       const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T0);
@@ -1473,8 +1479,9 @@
       g.gain.setValueAtTime(0.115, T0+12.0);
       g.gain.exponentialRampToValueAtTime(0.0001, T0+14.4);
       const trem = ac.createGain(); trem.gain.value = 1;
-      const lfo = ac.createOscillator(); lfo.type='sine'; lfo.frequency.value = 5.6+i*0.3;
-      const lg = ac.createGain(); lg.gain.value = 0.42;
+      // yavaş ve sığ dalgalanma: hızlı/derin titreme ses kesiliyormuş gibi duyuluyordu
+      const lfo = ac.createOscillator(); lfo.type='sine'; lfo.frequency.value = 2.1+i*0.25;
+      const lg = ac.createGain(); lg.gain.value = 0.10;
       lfo.connect(lg); lg.connect(trem.gain); lfo.start(T0); lfo.stop(T0+14.6);
       o.connect(lp); lp.connect(trem); trem.connect(g); g.connect(dark);
       o.start(T0); o.stop(T0+14.6);
@@ -1507,13 +1514,16 @@
     });
     // yağmur
     const rs = ac.createBufferSource(); rs.buffer = noiseBuffer(ac, 2.5); rs.loop = true;
-    const hp = ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1100;
+    // yağmur: filtresiz beyaz gürültü 6-16 kHz'te müzikten baskın çıkıp parazit
+    // gibi cızırdıyordu; bant sınırlı ve kısık tutulur
+    const hp = ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=500;
+    const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2600; lp.Q.value=0.5;
     const rg = ac.createGain();
     rg.gain.setValueAtTime(0.0001, T0);
-    rg.gain.exponentialRampToValueAtTime(0.075, T0+1.2);
-    rg.gain.setValueAtTime(0.075, T0+12.8);
+    rg.gain.exponentialRampToValueAtTime(0.045, T0+1.6);
+    rg.gain.setValueAtTime(0.045, T0+12.8);
     rg.gain.exponentialRampToValueAtTime(0.0001, T0+15.6);
-    rs.connect(hp); hp.connect(rg); rg.connect(dark);
+    rs.connect(hp); hp.connect(lp); lp.connect(rg); rg.connect(dark);
     rs.start(T0); rs.stop(T0+15.8);
 
     /* ---- geçiş ---- */
@@ -1614,16 +1624,25 @@
   }
 
   /* ---- canlı oynatma ---- */
-  let ac=null, master=null, musicGain=null, voiceGain=null, t0=0, muted=false, voiceBufs={};
+  let ac=null, master=null, musicGain=null, voiceGain=null, t0=0, muted=false, voiceBufs={}, scoreBuf=null, scorePromise=null;
   function buildAudio(){
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
-    ac = new AC();
+    ac = ac || new AC();                 // start() jest anında açmış olabilir
     master = ac.createGain(); master.gain.value = muted?0:0.85; master.connect(ac.destination);
     musicGain = ac.createGain(); musicGain.gain.value = 1; musicGain.connect(master);
     voiceGain = ac.createGain(); voiceGain.gain.value = 1.0; voiceGain.connect(master);
-    t0 = ac.currentTime + 0.16;
-    scheduleScore(ac, musicGain, t0);
+    // Müzik yüklemede çevrim dışı hazırlanmışsa tek tampon olarak çalınır (MP4'le
+    // birebir aynı). Canlı sentez yüzlerce notayı oynat anında kuruyor, ilk notalar
+    // gecikip üst üste biniyor ve açılış kesik kesik duyuluyordu.
+    if (scoreBuf){
+      t0 = ac.currentTime + 0.12;
+      const ms = ac.createBufferSource(); ms.buffer = scoreBuf;
+      ms.connect(musicGain); ms.start(t0);
+    } else {
+      t0 = ac.currentTime + 0.8;            // yedek yol: kurulum için geniş pay
+      scheduleScore(ac, musicGain, t0);
+    }
     // replikler + müzik kısması
     for (const k in VOICES){
       const v = VOICES[k], buf = voiceBufs[k];
@@ -1674,7 +1693,21 @@
   }
   function start(){
     ended = false;
+    if (!ac && !scoreBuf && scorePromise){
+      // Müzik henüz hazırlanıyor: ses bağlamını tıklamanın içinde aç (tarayıcı izni),
+      // müzik hazır olunca aynı bağlamla başlat.
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC){
+        ac = new AC(); ac.resume().catch(function(){});
+        veil.hidden = true; loading.textContent = 'Ses hazırlanıyor…'; loading.hidden = false;
+        scorePromise.then(function(){ loading.hidden = true; buildAudio(); go(); });
+        return;
+      }
+    }
     if (!ac){ if (!buildAudio()) fallbackStart = performance.now()/1000; }
+    go();
+  }
+  function go(){
     if (ac) ac.resume().catch(function(){});
     playing = true; veil.hidden = true; btnToggle.textContent = 'Duraklat';
   }
@@ -1706,10 +1739,24 @@
     return Promise.all(jobs).then(function(){ try{ tmp.close(); }catch(e){} });
   }
 
+  // müziği arka planda bir kez sentezle; hazır olmasa da sayfa açılır
+  function prerenderScore(){
+    const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!OC) return Promise.resolve();
+    try {
+      const oc = new OC(2, Math.ceil(44100*(DUR+1.5)), 44100);
+      const out = oc.createGain(); out.gain.value = 1; out.connect(oc.destination);
+      scheduleScore(oc, out, 0);
+      return oc.startRendering().then(function(b){ scoreBuf = b; }).catch(function(){});
+    } catch(e){ return Promise.resolve(); }
+  }
+
   function boot(){
     fit();
     loading.hidden = true; veil.hidden = false;
     requestAnimationFrame(loop);
+    // açılış beklemesin: müzik sahne göründükten sonra arka planda hazırlanır
+    setTimeout(function(){ scorePromise = prerenderScore(); }, 250);
   }
   const fontsReady = (document.fonts && document.fonts.load)
     ? Promise.all([document.fonts.load('400 34px Jost'), document.fonts.load('200 118px Jost'), document.fonts.load('400 24px Archivo')]).catch(function(){})

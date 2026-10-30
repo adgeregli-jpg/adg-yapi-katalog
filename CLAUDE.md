@@ -174,6 +174,25 @@ Sayfanın içinde Web Audio ile sentezlenir (harici dosya yok), MP4 için
   aralarında kabarıp marka adını bozuyor.
 - **Yapma:** saf sinüs "ksilofon" — piyano/çan gibi duyuluyor, müşteri
   beğenmedi.
+- **"Çok cızırtılı, kesik kesik" şikâyeti — çözüldü, tekrar düşme:**
+  - Yağmur filtresiz beyaz gürültüydü; 6–16 kHz enerjisi müziğin ortasından
+    4 dB fazlaydı, parazit gibi duyuluyordu. Şimdi 500 Hz–2,6 kHz bantlı ve
+    kısık (0,045). Ölçüt: açılışta 6–16 kHz payı −35 dB'nin altında kalmalı.
+  - Bas yaylılar 55 + 65,4 Hz'ti; aradaki fark saniyede 10,4 kez vuruş yapıp
+    "vırrr" diye titriyordu. Şimdi A1–E2–A2 (55, 82,5, 110 Hz). Alçak
+    registerde üçlü aralık kullanma.
+  - Yaylı titremesi %42 / 5,6 Hz idi, ses kesiliyor gibiydi; şimdi %10 / ~2,3 Hz.
+  - Replik sonlarına 40 ms yumuşak kapanış eklendi (l2 sıfıra inmeden
+    kesilip tık yapıyordu). `el_pick.py` zincirinde var.
+  - Yan zincir: `threshold=0.015 ratio=8 attack=30 release=800` — ani dalış
+    kesiklik hissi veriyordu.
+  - Ölçme betiği mantığı: bant enerji payları + 10 ms RMS zarfının modülasyon
+    spektrumu (titreşim frekansını gösterir) + replik son 15 ms tepe değeri.
+- **Tarayıcı sürümü** müziği oynat anında canlı sentezlemez: sahne göründükten
+  sonra `prerenderScore()` ile OfflineAudioContext'te bir kez hazırlar, tek
+  tampon olarak çalar (MP4 ile birebir aynı). Canlı sentezde ilk notalar
+  gecikip üst üste biniyordu. Hazır değilken oynat'a basılırsa ses bağlamı
+  jestin içinde açılır, "Ses hazırlanıyor…" gösterilir.
 
 ## Ortam notları
 

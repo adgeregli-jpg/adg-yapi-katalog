@@ -21,7 +21,7 @@ parts += [
     "[vo]asplit=2[vmix][vsc]",
     # bırakma süresi kısa olursa müzik kelime aralarında kabarıp konuşmayı
     # bozuyor ("pompalama"); uzun bırakma repliği baştan sona açıkta tutar.
-    "[0][vsc]sidechaincompress=threshold=0.010:ratio=16:attack=5:release=800[mus]",
+    "[0][vsc]sidechaincompress=threshold=0.015:ratio=8:attack=30:release=800[mus]",
     f"[mus][vmix]amix=inputs=2:normalize=0,volume=0.9,alimiter=limit=0.9,"
     f"afade=t=out:st={DUR-1.0}:d=0.8[a]",
 ]
