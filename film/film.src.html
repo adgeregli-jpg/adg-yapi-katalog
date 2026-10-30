@@ -29,7 +29,7 @@
     max-width:1040px; margin:0 auto;
     padding-left:max(16px, env(safe-area-inset-left, 0px));
     padding-right:max(16px, env(safe-area-inset-right, 0px));
-    padding-block:28px 40px; display:flex; flex-direction:column; gap:22px;
+    padding-block:20px 28px; display:flex; flex-direction:column; gap:22px;
   }
   .masthead{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .brandline{ font-family:var(--font-display); font-weight:300; letter-spacing:.34em; font-size:.78rem; text-transform:uppercase; color:var(--ink-soft); }
@@ -78,17 +78,6 @@
 </style>
 
 <div class="wrap">
-  <div class="masthead">
-    <svg width="46" height="42" viewBox="0 0 140 130" aria-hidden="true">
-      <path d="M4 126 L70 4 L136 126" fill="none" stroke="var(--brand)" stroke-width="7"/>
-      <path d="M55 108 H104" fill="none" stroke="var(--brand)" stroke-width="12"/>
-    </svg>
-    <span class="brandline">ADG Yapı · Kentsel Dönüşüm</span>
-  </div>
-
-  <h1>Mahalle <em>yeniden</em> doğuyor</h1>
-  <p class="lede">Çamurlu, yağmurlu bir mahallede camdan bakan mutsuz bir çocukla açılıyor; kentsel dönüşümden sonra yeni binaların önünde gülen çocuklarla kapanıyor.</p>
-
   <div class="stage" id="stage">
     <canvas id="gl"></canvas>
     <canvas id="ui" width="1280" height="720"></canvas>
