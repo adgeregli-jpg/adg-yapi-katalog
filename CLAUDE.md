@@ -26,7 +26,7 @@ araştırmayı baştan yapma: aşağıdaki kararlar verilmiş, araçlar denenmi�
 | `basvuru.html` | Kentsel dönüşüm başvuru formu. |
 | `animasyon.html` | 3B filmin tarayıcıda çalışan sürümü (tek dosya, sesler gömülü). Sayfada yapım aşaması/teknik not yok — müşteri istemiyor, geri ekleme. |
 | `ADG_Yapi_Kentsel_Donusum_3D.mp4` | Filmin 32 sn'lik MP4 çıktısı (1280×720, 30 fps). |
-| `ADG_Yapi_Reklam_Filmi_Muzikli5.mp4` | Eski tanıtım filmi (müşteriden gelen). |
+| `ADG_Yapi_Reklam_Filmi_Muzikli5.mp4` | Müşterinin kendi tanıtım filmi — dikey (1080×1920), 34 sn. Sayfa açılışında çıkan pencerede oynar: sessiz başlar (tarayıcılar sesli otomatik oynatmayı engeller), sağ üstte çarpı, altta "Sesi aç" düğmesi var. Kapatılınca `sessionStorage` ile hatırlanır, aynı oturumda tekrar çıkmaz. Film bölümündeki "Tanıtım Filmini İzle" düğmesi pencereyi sesli açar. |
 | `ADG_Yapi_Tanitim_Katalogu.pdf` | Kurumsal katalog. |
 | `film/` | Filmin tüm üretim hattı: kaynak, betikler, seslendirmeler. |
 

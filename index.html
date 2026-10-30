@@ -41,6 +41,25 @@
     .contact { text-align: center; }
     .contact p { margin: 0.4rem 0; }
     footer { background: var(--primary); color: #ccc; text-align: center; padding: 1.5rem; font-size: 0.9rem; }
+
+    /* Açılışta çıkan tanıtım filmi penceresi */
+    .modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+             background: rgba(24, 12, 4, 0.86); padding: 1rem; }
+    .modal[hidden] { display: none !important; }
+    /* genişlik yüksekliğe göre de sınırlı: dikey video yan bantsız otursun */
+    .modal-box { width: min(92vw, 400px, 44vh); display: flex; flex-direction: column; gap: 0.5rem; }
+    .modal-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: #fff; }
+    .modal-bar span { font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .modal-close { width: 40px; height: 40px; flex: 0 0 auto; border: 0; border-radius: 50%;
+                   background: var(--accent); color: #fff; font-size: 1.7rem; line-height: 1;
+                   cursor: pointer; display: grid; place-items: center; }
+    .modal-close:hover { filter: brightness(1.1); }
+    .modal-close:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+    .modal-box video { display: block; width: 100%; aspect-ratio: 9 / 16; border-radius: 8px; background: #000; }
+    .modal-sound { border: 0; border-radius: 999px; padding: 0.6rem 1.2rem; cursor: pointer;
+                   background: #fff; color: var(--primary); font-weight: 600; font-size: 0.9rem;
+                   align-self: center; }
+    .modal-sound[hidden] { display: none !important; }
     @media (max-width: 700px) {
       header { flex-direction: column; gap: 0.8rem; }
       header nav a { margin: 0 0.6rem; }
@@ -48,6 +67,18 @@
   </style>
 </head>
 <body>
+
+  <div class="modal" id="tanitim" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="ADG Yapı tanıtım filmi">
+      <div class="modal-bar">
+        <span>ADG Yapı · Tanıtım Filmi</span>
+        <button class="modal-close" id="tanitimKapat" aria-label="Kapat" title="Kapat">&times;</button>
+      </div>
+      <video id="tanitimVideo" controls playsinline preload="none" muted
+             src="ADG_Yapi_Reklam_Filmi_Muzikli5.mp4"></video>
+      <button class="modal-sound" id="tanitimSes" hidden>🔊 Sesi aç</button>
+    </div>
+  </div>
 
   <header>
     <h1>ADG YAPI</h1>
@@ -108,6 +139,7 @@
       </video>
     </div>
     <div class="download">
+      <a href="#" id="tanitimAc">Tanıtım Filmini İzle</a>
       <a href="ADG_Yapi_Tanitim_Katalogu.pdf" target="_blank">Kurumsal Kataloğu İndir (PDF)</a>
     </div>
   </section>
@@ -123,6 +155,65 @@
   <footer>
     &copy; 2026 ADG Yapı. Tüm hakları saklıdır.
   </footer>
+
+  <script>
+    (function () {
+      var kutu = document.getElementById('tanitim');
+      var video = document.getElementById('tanitimVideo');
+      var kapat = document.getElementById('tanitimKapat');
+      var sesBtn = document.getElementById('tanitimSes');
+      var acLink = document.getElementById('tanitimAc');
+
+      function hatirla(deger) {
+        try { sessionStorage.setItem('adg-tanitim', deger); } catch (e) {}
+      }
+      function gorulduMu() {
+        try { return sessionStorage.getItem('adg-tanitim') === 'kapandi'; } catch (e) { return false; }
+      }
+
+      function ac(sesli) {
+        kutu.hidden = false;
+        document.body.style.overflow = 'hidden';
+        video.muted = !sesli;
+        sesBtn.hidden = !!sesli;
+        var sozu = video.play();
+        if (sozu && sozu.catch) {
+          sozu.catch(function () { /* tarayıcı engellerse izleyici oynat düğmesini kullanır */ });
+        }
+        kapat.focus();
+      }
+      function kapatPencere() {
+        kutu.hidden = true;
+        document.body.style.overflow = '';
+        video.pause();
+        hatirla('kapandi');
+      }
+
+      kapat.addEventListener('click', kapatPencere);
+      kutu.addEventListener('click', function (e) { if (e.target === kutu) kapatPencere(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !kutu.hidden) kapatPencere();
+      });
+      sesBtn.addEventListener('click', function () {
+        video.muted = false;
+        video.volume = 1;
+        sesBtn.hidden = true;
+        video.play().catch(function () {});
+      });
+      video.addEventListener('ended', kapatPencere);
+      acLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        video.currentTime = 0;
+        ac(true);                       // düğmeye basıldığı için sesli açılabilir
+      });
+
+      // Sayfa açılışında: oturumda daha önce kapatılmadıysa sessiz başlat
+      if (!gorulduMu()) {
+        if (document.readyState === 'complete') ac(false);
+        else window.addEventListener('load', function () { ac(false); });
+      }
+    })();
+  </script>
 
 </body>
 </html>
