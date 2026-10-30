@@ -1,6 +1,6 @@
 # Film üretim hattı
 
-ADG Yapı kentsel dönüşüm filminin (32 sn, 1280×720, 30 fps) tüm kaynağı.
+ADG Yapı kentsel dönüşüm filminin (47,5 sn, 1280×720, 30 fps) tüm kaynağı.
 Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE.md`.
 
 ## Dosyalar
@@ -8,15 +8,21 @@ Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE
 | Dosya | Ne yapar |
 |---|---|
 | `film.src.html` | Filmin tek kaynağı: 3B sahne, müzik, kumanda, 2B üst katman. İçinde `__THREE_SRC__` ve `__VOICES__` yer tutucuları var. |
-| `build.py` | Yer tutucuları doldurup üç sürüm üretir. Replik zamanları (`AT`) burada. |
-| `voice.py` | Replikleri Supertonic 3 ile seslendirir, çocuk tonuna çeker, `ses/` altına yazar. Her repliği 5 kez üretip konuşma tanımayla en doğrusunu seçer. |
-| `asr.py` | Üretilen sesi faster-whisper ile yazıya döker — kulak yerine geçen doğrulama aracı. `python3 asr.py ses/l4.wav` |
-| `band.py` | Bant enerjilerini ölçer (çamur / gövde / anlaşılırlık / hava). Boğukluk kontrolü: `python3 band.py ses/l2.wav` |
+| `timing.py` | **Zamanlamanın tek kaynağı**: film süresi ve repliklerin başlangıç anları. `build.py` ve `mix.py` buradan okur. |
+| `build.py` | Yer tutucuları doldurup üç sürüm üretir. |
+| `el_pick.py` | ElevenLabs'te üretilen replikleri indirir, konuşma tanımayla doğrular, en doğrusunu seçip ses zincirinden geçirir. |
+| `el_manifest.tsv` | Üretilen her denemenin kaydı: `generation_id, voice_id, süre, istem, url`. |
+| `mix.py` | Seslendirmeleri müzikle karıştırıp `aud/mix.wav` üretir. Gecikmeleri `timing.py`den alır. |
+| `asr.py` | Üretilen sesi faster-whisper ile yazıya döker — kulak yerine geçen doğrulama aracı. `python3 asr.py aud/l4.wav` |
+| `band.py` | Bant enerjilerini ölçer (çamur / gövde / anlaşılırlık / hava). Boğukluk kontrolü: `python3 band.py aud/l2.wav` |
 | `partial.js` | Yalnız belirli kare aralığını yeniden çizer: `node partial.js 575 625` |
 | `music.js` | Sadece müziği çevrim dışı render eder (`aud/music.wav`). Hızlı deneme için. |
-| `peek.js` | Verilen saniyelerin karelerini PNG olarak çeker. Sahne ayarı için. |
-| `capture.js` | Müziği render eder, 960 kareyi tek tek çeker. |
-| `ses/` | Üretilmiş seslendirmeler (wav + mp3) ve `voices.json` (metin + süre). |
+| `peek.js` | Verilen saniyelerin karelerini PNG olarak çeker (`shots/`). Sahne ayarı için. |
+| `capture.js` | Müziği render eder, bütün kareleri tek tek çeker. |
+| `aud/` | Üretilmiş seslendirmeler (wav + mp3), `aud/el/` ham denemeler, `voices.json` (metin + süre). |
+
+Betikler bulundukları dizini kök sayar (`__dirname`), bu yüzden depo içinden
+olduğu gibi çalışır.
 
 `build.py` üç çıktı verir:
 
@@ -28,46 +34,34 @@ Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE
 ## Kurulum
 
 ```bash
-pip install supertonic                 # sinirsel Türkçe TTS (ONNX, OpenRAIL)
-pip install faster-whisper             # üretilen sesi doğrulamak için (asr.py)
-npm install three@0.150.1              # yerel çekim için
-mkdir -p build frames aud
+pip install faster-whisper            # üretilen sesi doğrulamak için
+npm install three@0.150.1             # yerel çekim için
+mkdir -p build frames aud shots
 cp node_modules/three/build/three.min.js build/
 ```
 
-HuggingFace erişimi gerekir (Supertonic modeli ilk çalıştırmada iner).
-Kapalıysa ortam ayarlarından `huggingface.co` açılmalı.
+Seslendirme **ElevenLabs bağdaştırıcısıyla** üretilir (aşağıya bakın); bu adım
+için ayrıca paket kurmak gerekmez.
 
 ## Hat
 
 ```bash
-# 1) Seslendirmeler  (metin/stil/hız değiştiyse)
-python3 voice.py                 # -> aud/l1..l5 .wav/.mp3 + aud/voices.json
+# 1) Seslendirmeler (metin değiştiyse): önce ElevenLabs'te üret, sonra
+#    el_manifest.tsv'ye ekle ve seç/işle. Ayrıntı: CLAUDE.md
+python3 el_pick.py                # -> aud/l*.wav/.mp3 + aud/voices.json
+python3 el_pick.py l3             # tek repliği yenilemek için
 
-# 2) Sayfayı derle    (zamanlama veya sahne değiştiyse)
-python3 build.py                 # -> build/render.html, build/animasyon3d.html, adg-film3d.html
+# 2) Sayfayı derle (zamanlama veya sahne değiştiyse)
+python3 build.py                  # -> build/render.html, build/animasyon3d.html, adg-film3d.html
 
-# 3) Tek kare bak     (sahne ayarlarken; saniye listesi verilir)
-node peek.js 8.2 17.8 26.4       # -> shots/f8_2.png ...
+# 3) Tek kare bak (sahne ayarlarken; saniye listesi verilir)
+node peek.js 4.6 15.2 26.3        # -> shots/f4_6.png ...
 
-# 4) Kareleri çek     (~7 dk; ikinci argüman: baştan atlanacak kare)
-node capture.js 0                # -> aud/music.wav + frames/0000..0959.png
+# 4) Kareleri çek (ikinci argüman: baştan atlanacak kare)
+node capture.js 0                 # -> aud/music.wav + frames/0000...png
 
 # 5) Sesi karıştır ve MP4'e kodla
-#    (gecikmeler build.py içindeki AT değerleriyle aynı olmalı, ms cinsinden)
-ffmpeg -y -i aud/music.wav -i aud/l1.wav -i aud/l2.wav -i aud/l3.wav -i aud/l4.wav -i aud/l5.wav \
- -filter_complex "\
- [1]aformat=channel_layouts=stereo,adelay=7100|7100[v1];\
- [2]aformat=channel_layouts=stereo,adelay=17400|17400[v2];\
- [3]aformat=channel_layouts=stereo,adelay=20700|20700[v3];\
- [4]aformat=channel_layouts=stereo,adelay=23200|23200[v4];\
- [5]aformat=channel_layouts=stereo,adelay=25950|25950[v5];\
- [v1][v2][v3][v4][v5]amix=inputs=5:normalize=0,volume=1.6,apad=whole_dur=33[vo];\
- [vo]asplit=2[vmix][vsc];\
- [0][vsc]sidechaincompress=threshold=0.012:ratio=14:attack=12:release=330[mus];\
- [mus][vmix]amix=inputs=2:normalize=0,volume=0.9,alimiter=limit=0.9,afade=t=out:st=31.5:d=0.5[a]" \
- -map "[a]" -t 32 -ar 44100 -ac 2 aud/mix.wav
-
+python3 mix.py                    # -> aud/mix.wav
 ffmpeg -y -framerate 30 -i frames/%04d.png -i aud/mix.wav \
  -c:v libx264 -preset medium -crf 19 -pix_fmt yuv420p -movflags +faststart \
  -c:a aac -b:a 192k -shortest ADG_Yapi_Kentsel_Donusum_3D.mp4
@@ -77,30 +71,24 @@ cp ADG_Yapi_Kentsel_Donusum_3D.mp4 ../
 cp build/animasyon3d.html ../animasyon.html
 ```
 
-`sidechaincompress` müziği replik boyunca otomatik kısar; bu yüzden ses
-karışımında ayrıca seviye otomasyonu yapmaya gerek yok.
-
 ## Sık yapılan değişiklikler
 
-**Replik metni / sesi:** `voice.py` içindeki `LINES` listesi — her satırda
-seslendirilecek metin, altyazı metni, **tanımanın duyması beklenen metin**,
-ses stili (`F1–F5`, `M1–M5`), hız ve perde kaldırma oranı var. Beklenen metin
-kalite kapısı için şart: üretim rastlantısal olduğundan her replik 5 kez
-üretilip en doğru duyulanı seçiliyor. Marka adı TTS'e **küçük harfle
-`a de ge`** yazılmalı — büyük harf "A de ce" diye okunuyor. Perde ne kadar yüksekse ses o kadar çocuksu; 1.15 hafif,
-1.25 belirgin. Sonra 1 → 2 → 4 → 5 adımları.
+**Replik metni / sesi:** `el_pick.py` içindeki `LINES` listesi — her satırda
+üretim istemi, tanımanın duyması beklenen metin, altyazı metni ve replik başına
+ek parlaklık (dB) var. Yeni replik için önce ElevenLabs'te ses üretilir, dönen
+kayıtlar `el_manifest.tsv`ye eklenir, sonra `el_pick.py` çalıştırılır.
 
-**Replik zamanı:** `build.py` içindeki `AT` ve 5. adımdaki `adelay`
-değerleri **birlikte** değişmeli. Süreler `ses/voices.json`'da.
+**Replik zamanı:** yalnızca `timing.py`. `build.py` ve `mix.py` oradan okur,
+artık iki yeri birlikte güncelleme zorunluluğu yok. Süreler `aud/voices.json`da.
 
 **Sahne / kamera:** `film.src.html` içinde `CAM` (kamera anahtarları),
-`TL` (yağmur, yıkım, yükseliş, yeşillenme aralıkları), `CAPS` (alt yazılar).
-Değişikliği `peek.js` ile tek karede kontrol et, sonra çek.
+`TL` (yağmur, iş yeri, yıkım, yükseliş, park aralıkları), `CAPS` (alt yazılar),
+`BADGES` (taahhüt rozetleri). Değişikliği `peek.js` ile tek karede kontrol et.
+`DUR` değişirse `timing.py` içindeki `DUR` de değişmeli.
 
 **Müzik:** `film.src.html` içinde `scheduleScore()`. Çalgılar: `pluck`/`strum`
 (ukulele), `marimba`, `shaker`, `woodblock`, `tamb`. Melodi `BARS` dizisinde
-MIDI numaralarıyla. Sadece müziği denemek için `node music.js` + `ffmpeg
--af volumedetect` ile seviye bak.
+MIDI numaralarıyla, `NBAR` kaç ölçü çalınacağını söyler.
 
 ## Ses ölçütleri
 
@@ -109,14 +97,16 @@ seviyesi −17 … −18 dB olmalı. `max_volume: 0.0 dB` görürsen kırpma var
 demektir, kazancı düşür — cızırtının kaynağı budur.
 
 ```bash
-ffmpeg -ss 17.4 -t 2.2 -i ADG_Yapi_Kentsel_Donusum_3D.mp4 -vn -af volumedetect -f null /dev/null
+ffmpeg -ss 28.8 -t 3.2 -i ADG_Yapi_Kentsel_Donusum_3D.mp4 -vn -af volumedetect -f null /dev/null
 ```
 
-**Netlik.** `python3 band.py ses/l2.wav` — "anlaşılırlık−çamur" farkı
-**−3 … 0 dB** olmalı. Daha aşağısı boğuk duyulur. Alt-ortayı (200–500 Hz)
-yükselterek "gövde" eklemeye çalışma, boğukluk oradan gelir.
+**Netlik.** `python3 band.py aud/l5.wav` — "anlaşılırlık−çamur" farkı
+**−6 … 0 dB** arasında olmalı. Daha aşağısı boğuk duyulur. Alt-ortayı
+(200–500 Hz) yükselterek "gövde" eklemeye çalışma, boğukluğun kaynağı odur.
+Çağlayan sesi doğal olarak koyu; onun repliklerinde `LINES` içindeki ek
+parlaklık kolonu 5–7 dB'dir.
 
-**Okunuş.** MP4 bitince `medium` modelle beş repliği de dinlet:
+**Okunuş.** MP4 bitince `medium` modelle bütün replikleri dinlet:
 
 ```python
 from faster_whisper import WhisperModel   # small ince ayrımlarda kararsız

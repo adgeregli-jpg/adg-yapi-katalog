@@ -1,6 +1,5 @@
 import base64, json
-AT = {"l1":7.10, "l2":17.40, "l3":20.70, "l4":23.20, "l5":25.95}
-NOSUB = {"l5"}
+from timing import AT, NOSUB
 meta = json.load(open("aud/voices.json", encoding="utf-8"))
 voices = {k: {"text": v["text"], "dur": v["dur"], "at": AT[k],
               "b64": base64.b64encode(open(f"aud/{k}.mp3","rb").read()).decode(),

@@ -1,5 +1,5 @@
 const { chromium } = require('playwright');
-const DIR = '/tmp/claude-0/-home-user-adg-yapi-katalog/93137111-a395-5609-8608-ddab847a94f1/scratchpad';
+const DIR = __dirname;   // betik hangi dizindeyse hat orada çalışır
 (async () => {
   const b = await chromium.launch({ args:['--headless','--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'] });
   const p = await b.newPage({ viewport:{width:1300,height:800}, deviceScaleFactor:1 });

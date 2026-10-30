@@ -1,0 +1,21 @@
+# Film üretiminin ara çıktıları — hepsi film/README.md'deki hattan yeniden üretilir.
+# (git satır sonu yorumu desteklemez, açıklamalar ayrı satırda)
+
+# 1425 PNG kare, ~440 MB
+film/frames/
+# derlenmiş sayfalar + yerel three.js
+film/build/
+# peek.js tek kare önizlemeleri
+film/shots/
+film/node_modules/
+film/__pycache__/
+# artifact sürümü, build.py üretir
+film/adg-film3d.html
+# ElevenLabs ham denemeleri — el_manifest.tsv'den yeniden inilir
+film/aud/el/
+# capture.js / music.js üretir
+film/aud/music.wav
+# mix.py üretir
+film/aud/mix.wav
+# kopyası depo kökünde tutuluyor
+film/ADG_Yapi_Kentsel_Donusum_3D.mp4
