@@ -21,15 +21,18 @@ araştırmayı baştan yapma: aşağıdaki kararlar verilmiş, araçlar denenmi�
 
 | Dosya | Ne |
 |---|---|
-| `index.html` | Tanıtım sitesi. Filmi oynatır, kataloğa ve başvuruya bağlanır. |
+| `index.html` | Tanıtım sitesi. Film, sayfanın altında "Kentsel Dönüşüm Filmi" bölümünde (iletişimden hemen önce) oynar. Menüde ayrı animasyon başlığı yok; 3B sürüme videonun altından küçük bir bağlantıyla gidilir. |
+| `film-kapak.jpg` | Videonun kapak karesi (filmin 16.85. saniyesi, altyazısız). |
 | `basvuru.html` | Kentsel dönüşüm başvuru formu. |
-| `animasyon.html` | 3B filmin tarayıcıda çalışan sürümü (tek dosya, sesler gömülü). |
+| `animasyon.html` | 3B filmin tarayıcıda çalışan sürümü (tek dosya, sesler gömülü). Sayfada yapım aşaması/teknik not yok — müşteri istemiyor, geri ekleme. |
 | `ADG_Yapi_Kentsel_Donusum_3D.mp4` | Filmin 32 sn'lik MP4 çıktısı (1280×720, 30 fps). |
 | `ADG_Yapi_Reklam_Filmi_Muzikli5.mp4` | Eski tanıtım filmi (müşteriden gelen). |
 | `ADG_Yapi_Tanitim_Katalogu.pdf` | Kurumsal katalog. |
 | `film/` | Filmin tüm üretim hattı: kaynak, betikler, seslendirmeler. |
 
 Tarayıcı sürümü (artifact): https://claude.ai/artifact/PrtjZHjwxp1Go16kFR3hRh
+Yayındaki site: https://adgeregli-jpg.github.io/adg-yapi-katalog/ (GitHub Pages,
+`main` dalından, push sonrası ~1 dk içinde güncellenir). Depo herkese açık.
 
 ## Film — verilmiş kararlar
 
