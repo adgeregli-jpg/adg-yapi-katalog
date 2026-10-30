@@ -12,12 +12,15 @@ LINES = [
  ("l1", "[sad][disappointed] Bizim sokak hep çamur... hiç oyun oynayamıyoruz.",
         "bizim sokak hep çamur hiç oyun oynayamıyoruz",
         "Bizim sokak hep çamur… hiç oyun oynayamıyoruz.", 6.0),
- ("l2", "[sad][sighs] Keşke bizim de yeni, sapasağlam bir evimiz olsa...",
-        "keşke bizim de yeni sapasağlam bir evimiz olsa",
-        "Keşke bizim de yeni, sapasağlam bir evimiz olsa…", 2.0),
- ("l2b", "[excited][hopeful] Bütün mahalle A De Ge Yapı'ya başvurdu!",
-        "bütün mahalle adg yapıya başvurdu",
-        "Bütün mahalle ADG Yapı’ya başvurdu!", 2.0),
+ ("l2", "[sad][determined] Evlerimiz çok eski... kentsel dönüşüme girmeli!",
+        "evlerimiz çok eski kentsel dönüşüme girmeli",
+        "Evlerimiz çok eski… kentsel dönüşüme girmeli!", 2.0),
+ ("l2a", "[curious] Peki... bu işin uzmanı kim?",
+        "peki bu işin uzmanı kim",
+        "Peki… bu işin uzmanı kim?", 7.0),
+ ("l2b", "[excited] Tabii ki... A... Deee... Ge... Yapı! Bütün mahalle başvurdu!",
+        "tabii ki a d g yapı bütün mahalle başvurdu",
+        "Tabii ki ADG Yapı! Bütün mahalle başvurdu!", 2.0),
  ("l3", "[surprised][hopeful] Bakın! Bizim mahalle yenileniyor!",
         "bakın bizim mahalle yenileniyor",
         "Bakın! Bizim mahalle yenileniyor!", 7.0),
@@ -33,11 +36,11 @@ LINES = [
  ("l6", "[giggles][happy] Artık burada korkmadan oynuyoruz!",
         "artık burada korkmadan oynuyoruz",
         "Artık burada korkmadan oynuyoruz!", 4.0),
- ("l7", "[giggles][happy] Teşekkürler, A De Ge Yapı!",
-        "teşekkürler adg yapı",
+ ("l7", "[giggles][happy] Teşekkürler... A... Deee... Ge... Yapı!",
+        "teşekkürler a d g yapı",
         "Teşekkürler ADG Yapı!", 5.0),
- ("l8", "[cheerful][bright and bubbly] Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması... A De Ge Yapı!",
-        "kentsel dönüşüm odaklı farklı bir müteahhitlik firması adg yapı",
+ ("l8", "[cheerful][bright and bubbly] Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması... A... Deee... Ge... Yapı!",
+        "kentsel dönüşüm odaklı farklı bir müteahhitlik firması a d g yapı",
         "Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması… ADG Yapı!", 4.0),
 ]
 
@@ -81,8 +84,8 @@ for vid, prompt, expect, shown, bright in LINES:
         for w in norm(expect).split():
             if len(w) >= 5 and w not in h:
                 score -= 0.25
-        if "adg" in norm(expect) and "adg" not in h:
-            score -= 0.35
+        if "a d g" in norm(expect) and "a d g" not in h:
+            score -= 0.35          # müşteri isteği: A — De — Ge ayrı ayrı duyulmalı
         print(f"  {vid} tekrar {k+1}: {score:.2f}  “{heard}”")
         if best is None or score > best[0]:
             best = (score, out)

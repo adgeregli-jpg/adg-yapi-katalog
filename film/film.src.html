@@ -88,7 +88,7 @@
           <svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true"><path d="M2 2 L28 17 L2 32 Z" fill="#fff"/></svg>
         </span>
         <span class="veil-label">Sesli oynat</span>
-        <span class="veil-sub">48 saniye · müzik ve çocuk sesleri</span>
+        <span class="veil-sub">56 saniye · müzik ve çocuk sesleri</span>
       </span>
     </button>
   </div>
@@ -98,7 +98,7 @@
     <button class="btn" id="restart" type="button">Baştan</button>
     <button class="btn" id="mute" type="button" aria-pressed="false">Sesi kapat</button>
     <div class="track" aria-hidden="true"><span id="bar"></span></div>
-    <div class="clock" id="clock">00:00 / 00:47</div>
+    <div class="clock" id="clock">00:00 / 00:55</div>
   </div>
 
 </div>
@@ -115,57 +115,59 @@
   "use strict";
 
   /* ===================== zaman çizelgesi ===================== */
-  const DUR = 47.5;
+  const DUR = 55.5;
   const UIW = 1280, UIH = 720;
   const VOICES = __VOICES__;          // {id:{text,dur,at,b64}}
   const FLASH = [2.6, 5.6, 11.3];
 
   const TL = {
-    rainOut:[11.5, 14.0], hope:[13.2, 17.6], office:[13.2, 18.9],
-    demo:[19.0, 21.6],    rise:[20.6, 25.6], green:[19.4, 23.8],
-    work:[20.4, 28.6],    park:[24.6, 27.4], people:[27.8, 28.7],
-    logo:[12.5, 14.6],    endcard:41.3
+    rainOut:[13.7, 16.2], hope:[15.4, 19.8], office:[15.4, 21.1],
+    demo:[21.2, 23.8],    rise:[22.8, 27.8], green:[21.6, 26.0],
+    work:[22.6, 30.8],    park:[26.8, 29.6], people:[30.0, 30.9],
+    logo:[14.7, 16.8],    endcard:46.5
   };
   const CAPS = [
-    {a:1.2,  b:3.3,  s:'Çamurlu sokaklar, yorgun binalar.'},
-    {a:17.8, b:19.8, s:'Mahalleli ADG Yapı’ya başvurdu.'}
+    {a:1.2,  b:3.3,  s:'Çamurlu sokaklar, yorgun binalar.'}
   ];
   // inşaat sırasında sırayla açılan taahhüt rozetleri
   const BADGES = [
-    {t:21.9, s:'Zamanında teslim'},
-    {t:23.5, s:'Kaliteli işçilik'},
-    {t:25.1, s:'Güvenli yapılar'}
+    {t:24.1, s:'Zamanında teslim'},
+    {t:25.7, s:'Kaliteli işçilik'},
+    {t:27.3, s:'Güvenli yapılar'}
   ];
-  const BADGE_OUT = 28.5;
+  const BADGE_OUT = 30.7;
   // kamera: {t, pozisyon, bakış}
   const CAM = [
     {t:0.0,  p:[-18, 3.8, 22],   l:[-6, 3.0, -8]},     // geniş: çamurlu sokak
     {t:3.0,  p:[-5.6, 2.6, 9.0], l:[-2.6, 1.7, 0.5]},  // çamurdaki kıza yaklaş
     {t:3.6,  p:[-4.5, 2.10, 5.4],l:[-2.6, 1.42, 0.5]}, // kız konuşur (l1)
-    {t:7.5,  p:[-4.4, 2.08, 5.1],l:[-2.6, 1.40, 0.5]},
-    {t:7.9,  p:[0.8, 4.90, -3.4],l:[0.8, 5.00, -10]},  // pencereye kes
-    {t:12.3, p:[0.8, 5.00, -6.4],l:[0.8, 5.00, -10]},  // oğlan konuşur (l2)
-    {t:12.7, p:[7, 4.6, 19],     l:[0, 3.6, -13]},     // logo damgası için geniş
-    {t:13.7, p:[18.5, 5.2, 19.5],l:[12, 3.4, 1]},      // ADG Yapı iş yerine yaklaş
-    {t:14.4, p:[13.2, 3.5, 14.6],l:[11.7, 3.0, 1.2]},  // vitrin okunur (l2b)
-    {t:17.8, p:[12.8, 3.4, 13.4],l:[11.7, 2.9, 1.2]},
-    {t:18.4, p:[5.5, 4.4, 17],   l:[9.5, 3.0, 2]},     // başvuru kuyruğu geniş
-    {t:19.2, p:[7, 5.6, 22],     l:[0, 4.2, -14]},     // sokağa dön: yıkım
-    {t:20.0, p:[6.5, 4.6, 6.0],  l:[0.8, 3.2, -14]},   // merkez bina çöker
-    {t:21.1, p:[6.0, 4.4, 4.6],  l:[0.8, 2.6, -14]},
-    {t:21.4, p:[-5.2, 2.3, 6.4], l:[-2.8, 2.1, -2.5]}, // kız önde, arkada kuleler (l3)
-    {t:24.2, p:[-5.0, 2.5, 5.9], l:[-2.8, 2.3, -2.5]}, // yavaşça yaklaş
-    {t:24.6, p:[3.8, 2.8, 8.6],  l:[1.2, 1.7, 0.6]},   // ADG yelekli işçiler (l3b)
-    {t:28.4, p:[3.6, 2.9, 8.0],  l:[1.2, 1.7, 0.6]},
-    {t:28.8, p:[3.6, 2.15, 10.6],l:[3.2, 1.45, 5.6]},  // kidA (l4)
-    {t:31.9, p:[3.6, 2.10, 10.0],l:[3.2, 1.42, 5.6]},
-    {t:32.3, p:[-2.7, 2.15, 9.0],l:[-3.0, 1.45, 4.2]}, // kidB (l5)
-    {t:34.5, p:[-2.7, 2.10, 8.5],l:[-3.0, 1.42, 4.2]},
-    {t:34.9, p:[6.8, 2.20, 9.2], l:[6.4, 1.50, 3.2]},  // kidC (l6)
-    {t:37.8, p:[6.8, 2.16, 8.7], l:[6.4, 1.48, 3.2]},
-    {t:38.2, p:[-2.5, 2.60, 9.6],l:[-3.0, 1.95, 4.2]}, // balonlu kidB (l7)
-    {t:41.3, p:[0, 5.6, 19],     l:[0, 6.0, -5]},      // kapanış için geri çek
-    {t:47.5, p:[0, 6.8, 24],     l:[0, 7.0, -8]}
+    {t:7.4,  p:[-4.4, 2.08, 5.1],l:[-2.6, 1.40, 0.5]},
+    {t:7.7,  p:[0.8, 5.15, -3.4],l:[0.8, 5.20, -10]},  // pencereye kes: oğlan (l2)
+    {t:11.5, p:[0.8, 5.20, -6.2],l:[0.8, 5.20, -10]},
+    {t:11.7, p:[-4.6, 1.90, 4.6],l:[-2.6, 1.75, 0.5]}, // kıza dön: "bu işin uzmanı kim?" (l2a)
+    {t:14.4, p:[-4.5, 1.85, 4.3],l:[-2.6, 1.75, 0.5]},
+    {t:14.9, p:[7, 4.6, 19],     l:[0, 3.6, -13]},     // logo damgası — cevap
+    {t:15.9, p:[18.5, 5.2, 19.5],l:[12, 3.4, 1]},      // ADG Yapı iş yerine yaklaş
+    {t:16.6, p:[13.2, 3.5, 14.6],l:[11.7, 3.0, 1.2]},  // vitrin okunur (l2b)
+    {t:20.0, p:[12.8, 3.4, 13.4],l:[11.7, 2.9, 1.2]},
+    {t:20.6, p:[5.5, 4.4, 17],   l:[9.5, 3.0, 2]},     // başvuru kuyruğu geniş
+    {t:21.4, p:[7, 5.6, 22],     l:[0, 4.2, -14]},     // sokağa dön: yıkım
+    {t:22.2, p:[6.5, 4.6, 6.0],  l:[0.8, 3.2, -14]},   // merkez bina çöker
+    {t:23.3, p:[6.0, 4.4, 4.6],  l:[0.8, 2.6, -14]},
+    {t:23.6, p:[-5.2, 2.3, 6.4], l:[-2.8, 2.1, -2.5]}, // kız önde, arkada kuleler (l3)
+    {t:26.4, p:[-5.0, 2.5, 5.9], l:[-2.8, 2.3, -2.5]},
+    {t:26.8, p:[3.8, 2.8, 8.6],  l:[1.2, 1.7, 0.6]},   // ADG yelekli işçiler (l3b)
+    {t:30.6, p:[3.6, 2.9, 8.0],  l:[1.2, 1.7, 0.6]},
+    {t:31.0, p:[3.6, 2.15, 10.6],l:[3.2, 1.45, 5.6]},  // kidA (l4)
+    {t:34.1, p:[3.6, 2.10, 10.0],l:[3.2, 1.42, 5.6]},
+    {t:34.5, p:[-2.7, 2.15, 9.0],l:[-3.0, 1.45, 4.2]}, // kidB (l5)
+    {t:36.7, p:[-2.7, 2.10, 8.5],l:[-3.0, 1.42, 4.2]},
+    {t:37.1, p:[6.8, 2.20, 9.2], l:[6.4, 1.50, 3.2]},  // kidC (l6)
+    {t:40.0, p:[6.8, 2.16, 8.7], l:[6.4, 1.48, 3.2]},
+    {t:40.4, p:[-2.5, 2.40, 9.4],l:[-3.0, 1.75, 4.2]}, // balonlu kidB (l7)
+    {t:46.0, p:[-2.5, 2.35, 8.9],l:[-3.0, 1.72, 4.2]},
+    {t:46.5, p:[0, 5.6, 19],     l:[0, 6.0, -5]},      // kapanış için geri çek
+    {t:55.5, p:[0, 6.8, 24],     l:[0, 7.0, -8]}
   ];
 
   const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
@@ -784,7 +786,9 @@
     u.legs[1].rotation.x = -Math.sin(ph)*amp;
     u.arms[0].rotation.x = -Math.sin(ph)*amp*0.95 + (o.armL||0);
     u.arms[1].rotation.x =  Math.sin(ph)*amp*0.95 + (o.armR||0);
-    u.arms[0].rotation.z =  (o.armLz||0);
+    // armLz / armRz: kolun yana açılması, pozitif = gövdeden DIŞA.
+    // (Eskiden işaret karışıktı; kollar kafanın/gövdenin içine dönüp kayboluyordu.)
+    u.arms[0].rotation.z = -(o.armLz||0);
     u.arms[1].rotation.z =  (o.armRz||0);
 
     // zıplama + esneme/sıkışma: havada uzar, yere basarken yayılır
@@ -843,13 +847,15 @@
     rib.position.y = 0.70; rib.rotation.x = Math.PI/2; umbrella.add(rib);
   })();
   // şemsiye omzunun yanında durur, yüzünü kapatmaz
-  umbrella.position.set(0.60, 1.02, 0.10); umbrella.rotation.z = -0.24;
+  umbrella.position.set(0.80, 1.02, 0.10); umbrella.rotation.z = -0.24;
   kidMud.add(umbrella);
 
   // camdaki oğlan (l2 — AliCan)
   const kidWin = makeChar(Object.assign({skin:0xeec49b, hair:0x2b1d14, shirt:0x3f8ed6,
                                          pants:0x2c4a6b, seed:1}, KID));
-  kidWin.position.set(0.8, 3.38, -9.86); scene.add(kidWin);
+  kidWin.position.set(0.8, 3.62, -9.86); scene.add(kidWin);
+  // pencerede yalnız belden yukarısı görünür; bacaklar cephenin önüne sarkıyordu
+  kidWin.userData.legs.forEach(function(l){ l.visible = false; });
 
   // park çocukları ve aile
   const kidA = makeChar(Object.assign({skin:0xf0cda2, hair:0x241a12, shirt:0x15c4a8,
@@ -946,7 +952,7 @@
     }
     ux.closePath(); ux.fill(); ux.restore();
   }
-  const BURSTS = [25.5, 28.1];        // kuleler tamamlanır / park açılır
+  const BURSTS = [27.7, 30.3];        // kuleler tamamlanır / park açılır
 
   function drawUI(t){
     ux.clearRect(0,0,UIW,UIH);
@@ -1133,24 +1139,29 @@
     kidMud.visible = ppl < 0.05;
     umbrella.visible = rainA > 0.08;
     if (kidMud.visible){
-      const uzgun = t < 12.6;
-      poseChar(kidMud, {phase:t*1.25, amp:0.045, y:0, sad:uzgun, surprise: spk==='l3',
-                        talking: spk==='l1' || spk==='l3', t:t,
-                        armR: uzgun ? -0.78 : -1.95, armRz: uzgun ? -0.62 : -0.88,
-                        armLz: 0.22, headX: uzgun ? 0.07 : -0.16, lean: uzgun ? -0.025 : 0});
+      const uzgun = t < 14.8;
+      const soruyor = spk==='l2a';          // "Peki bu işin uzmanı kim?" — pencereye bakar
+      const gosterir = spk==='l3';          // "Bakın!" — kolunu kaldırıp gösterir
+      poseChar(kidMud, {phase:t*1.25, amp:0.045, y:0, sad: uzgun && !soruyor,
+                        surprise: gosterir || soruyor,
+                        talking: spk==='l1' || soruyor || gosterir, t:t,
+                        armR: -0.25, armRz: gosterir ? 2.25 : 0.35,
+                        armLz: 0.18, headX: soruyor ? -0.22 : (uzgun ? 0.07 : -0.16),
+                        lean: uzgun ? -0.025 : 0});
       // şemsiye omuzda hafifçe sallanır
       umbrella.rotation.z = -0.24 + Math.sin(t*1.15)*0.05;
     }
 
     // pencere ışığı ve camdaki oğlan (l2)
-    const winOn = 1 - sstep(12.4, 13.0, t);
+    const winOn = 1 - sstep(14.6, 15.2, t);
     winLight.material.color.setRGB(0.84*winOn, 0.60*winOn, 0.29*winOn);
     winGlow.intensity = winOn * 1.5;
     winG.visible = demo < 0.02 && winOn > 0.02;
     kidWin.visible = winOn > 0.05 && demo < 0.02;
     if (kidWin.visible){
-      poseChar(kidWin, {phase:t*1.3, amp:0.05, y:3.38 + Math.sin(t*1.1)*0.02, sad:true,
-                        talking: spk==='l2', t:t, armRz:-0.5, armR:-1.25, headX:0.05});
+      poseChar(kidWin, {phase:t*1.3, amp:0.05, y:3.62 + Math.sin(t*1.1)*0.02, sad:true,
+                        talking: spk==='l2', t:t, armR:-1.25, armL:-1.25,
+                        armRz:-0.10, armLz:-0.10, headX:0.05});
     }
 
     // eski binalar: yıkım
@@ -1189,10 +1200,10 @@
     });
 
     // vinç
-    crane.visible = t > 12.9 && t < 20.0;
+    crane.visible = t > 15.1 && t < 22.2;
     if (crane.visible){
       crane.rotation.y = Math.sin(t*0.26)*0.5;
-      crane.position.y = lerp(-34, 0, sstep(12.9, 13.9, t)) + lerp(0, -34, sstep(19.0, 20.0, t));
+      crane.position.y = lerp(-34, 0, sstep(15.1, 16.1, t)) + lerp(0, -34, sstep(21.2, 22.2, t));
     }
 
     // ADG Yapı iş yeri: başvuru sahnesinde yerine oturur, sonra mahallede kalır
@@ -1210,8 +1221,8 @@
       c.visible = yuru > 0 && t < TL.office[1] + 0.8 && x > -21 && x < 13.6;
       if (c.visible){
         c.position.set(x, 0, 4.3 + (i%3)*0.95);
-        poseChar(c, {phase:t*5.4 + i*1.25, amp:0.46, y:0, bob:0.05, squash:0.8, t:t,
-                     armRz:-0.16, armLz:0.16});
+        poseChar(c, {phase:t*5.4 + i*1.25, amp:0.46, y:0, t:t,
+                     armRz:0.12, armLz:0.12});
       }
     });
 
@@ -1223,16 +1234,16 @@
       const w = WORKERS[i], uw = t - TL.work[0];
       const o = {phase:uw*2.2 + i, amp:0.10, y:0, t:t};
       if (w.act === 'cakma'){            // çakma: kol yukarı aşağı
-        o.armR = -1.95 + Math.abs(Math.sin(uw*7.5))*1.25; o.armRz = -0.78;
-        o.armL = -0.60; o.armLz = 0.42;
+        o.armR = -1.95 + Math.abs(Math.sin(uw*7.5))*1.25; o.armRz = 0.55;
+        o.armL = -0.60; o.armLz = 0.25;
       } else if (w.act === 'isaret'){    // yükselen kuleyi işaret eder
-        o.armR = -2.45; o.armRz = -0.55; o.armL = -0.20; o.headX = -0.30;
+        o.armR = -0.35; o.armRz = 2.35; o.armL = -0.20; o.armLz = 0.15; o.headX = -0.30;
       } else if (w.act === 'tasima'){    // kalas taşıyarak yürür
-        o.armR = -1.15; o.armL = -1.15; o.armRz = -0.12; o.armLz = 0.12;
-        o.phase = uw*4.2 + i; o.amp = 0.34; o.bob = 0.04; o.squash = 0.7;
+        o.armR = -1.15; o.armL = -1.15; o.armRz = -0.10; o.armLz = -0.10;
+        o.phase = uw*4.2 + i; o.amp = 0.34;
         c.position.x = w.x + Math.sin(uw*0.55)*2.2;
       } else {                           // el sallayarak selam verir
-        o.armR = -2.60 + Math.sin(uw*6)*0.30; o.armRz = -0.90; o.armL = -0.30;
+        o.armR = -0.30; o.armRz = 2.35 + Math.sin(uw*6)*0.30; o.armL = -0.30; o.armLz = 0.15;
       }
       poseChar(c, o);
       const pop = back(sstep(TL.work[0] + i*0.18, TL.work[0] + 0.9 + i*0.18, t));
@@ -1282,7 +1293,7 @@
       g.visible = green > 0.45;
       if (!g.visible) return;
       const u = g.userData, sp = 5.5 + rnd(i)*2.6;
-      g.position.set(-60 + ((t-13)*sp + i*17) % 130, 20 + rnd(i*5)*9, -46 - rnd(i*3)*22);
+      g.position.set(-60 + ((t-15.2)*sp + i*17) % 130, 20 + rnd(i*5)*9, -46 - rnd(i*3)*22);
       const fl = Math.sin(t*6.5 + i*1.3)*0.65;
       u.wings.forEach(function(w){ w.piv.rotation.z = -w.d*fl; });
     });
@@ -1317,19 +1328,20 @@
     if (showPark){
       const u = t - TL.people[0];
       // kidA (l4): coşkuyla zıplar, kolunu havaya kaldırır
-      poseChar(kidA, {phase:u*5.6, amp:0.34, y:0, bob:0.12, squash:1.2, talking:spk==='l4', t:t,
-                      armR:-2.30 + Math.sin(u*8)*0.22, armRz:-1.00, armL:-0.40, headX:-0.06});
+      poseChar(kidA, {phase:u*2.4, amp:0.07, y:0, talking:spk==='l4', t:t,
+                      armR:-0.30, armRz:2.30 + Math.sin(u*8)*0.25, armL:-0.20, armLz:0.30,
+                      headX:-0.06});
       // kidB (l5, l7): hoplar, elinde balon
-      poseChar(kidB, {phase:u*6.2, amp:0.30, y:0, bob:0.14, squash:1.3,
+      poseChar(kidB, {phase:u*2.2, amp:0.07, y:0,
                       talking: spk==='l5' || spk==='l7', surprise: spk==='l5', t:t,
-                      armR:-2.45, armRz:-0.62, armLz:0.42});
+                      armR:-0.20, armRz:2.30, armLz:0.25});
       // kidC (l6): topu bekler, sağa sola sallanır
-      poseChar(kidC, {phase:u*3.0, amp:0.22, y:0, bob:0.06, talking:spk==='l6', t:t,
-                      armL:-0.50, armLz:0.75 + Math.sin(u*6)*0.20, armRz:-0.80,
+      poseChar(kidC, {phase:u*2.6, amp:0.07, y:0, talking:spk==='l6', t:t,
+                      armL:-0.30, armLz:0.55 + Math.sin(u*6)*0.18, armRz:0.55,
                       headZ:Math.sin(u*2)*0.05});
-      poseChar(dad,  {phase:u*2.2, amp:0.26, y:0, bob:0.03, t:t, armRz:-0.22});
-      poseChar(mom,  {phase:u*2.2+0.6, amp:0.26, y:0, bob:0.03, t:t, armLz:0.22});
-      poseChar(kidF, {phase:u*3.4, amp:0.38, y:0, bob:0.09, squash:1.25, t:t, armLz:1.15, armRz:-1.15});
+      poseChar(dad,  {phase:u*2.2, amp:0.26, y:0, t:t, armRz:0.12, armLz:0.12});
+      poseChar(mom,  {phase:u*2.2+0.6, amp:0.26, y:0, t:t, armRz:0.12, armLz:0.12});
+      poseChar(kidF, {phase:u*3.4, amp:0.38, y:0, t:t, armLz:0.45, armRz:0.45});
       const walk = clamp(u*0.62, 0, 14);
       dad.position.x = -12.0 + walk; mom.position.x = -9.4 + walk; kidF.position.x = -10.7 + walk;
       // top: yere çarpınca yayılır, havada uzar
@@ -1340,9 +1352,9 @@
       ball.scale.set(bs, 2-bs, bs);
       // balon: kidB'nin elinde, salınarak
       const kb = kidB.position.y;
-      balloon.position.set(-2.00, 3.18 + kb + Math.sin(u*1.8)*0.09, 4.34);
+      balloon.position.set(-2.33, 3.46 + kb + Math.sin(u*1.8)*0.09, 4.12);
       balloon.rotation.z = Math.sin(u*1.5)*0.12;
-      balloonStr.position.set(-2.12, 2.34 + kb, 4.32);
+      balloonStr.position.set(-2.33, 2.22 + kb, 4.12);
       balloonStr.rotation.z = Math.sin(u*1.5)*0.08;
     }
 
@@ -1458,17 +1470,17 @@
       const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=700; lp.Q.value=1.2;
       const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T0);
       g.gain.exponentialRampToValueAtTime(0.115, T0+2.4);
-      g.gain.setValueAtTime(0.115, T0+9.8);
-      g.gain.exponentialRampToValueAtTime(0.0001, T0+12.2);
+      g.gain.setValueAtTime(0.115, T0+12.0);
+      g.gain.exponentialRampToValueAtTime(0.0001, T0+14.4);
       const trem = ac.createGain(); trem.gain.value = 1;
       const lfo = ac.createOscillator(); lfo.type='sine'; lfo.frequency.value = 5.6+i*0.3;
       const lg = ac.createGain(); lg.gain.value = 0.42;
-      lfo.connect(lg); lg.connect(trem.gain); lfo.start(T0); lfo.stop(T0+12.4);
+      lfo.connect(lg); lg.connect(trem.gain); lfo.start(T0); lfo.stop(T0+14.6);
       o.connect(lp); lp.connect(trem); trem.connect(g); g.connect(dark);
-      o.start(T0); o.stop(T0+12.4);
+      o.start(T0); o.stop(T0+14.6);
     });
     // yalnız klarnet/theremin ezgisi (minör, hüzünlü)
-    [[1.3,349.2],[3.4,311.1],[5.6,261.6],[7.6,293.7],[9.5,261.6],[11.3,233.1]].forEach(function(p){
+    [[1.3,349.2],[3.4,311.1],[5.6,261.6],[7.6,293.7],[9.5,261.6],[11.3,233.1],[13.1,261.6]].forEach(function(p){
       const o = ac.createOscillator(); o.type='sine';
       o.frequency.setValueAtTime(p[1]*0.97, T0+p[0]);
       o.frequency.linearRampToValueAtTime(p[1], T0+p[0]+0.45);
@@ -1481,7 +1493,7 @@
       o.connect(lp); lp.connect(g); o.start(T0+p[0]); o.stop(T0+p[0]+2.3);
     });
     // ağır, boğuk telli vuruşlar (sessiz adımlar)
-    [1.0,1.9,2.8,4.6,5.5,6.4,8.0,8.9,10.1,11.0,11.9].forEach(function(b,i){
+    [1.0,1.9,2.8,4.6,5.5,6.4,8.0,8.9,10.1,11.0,11.9,12.8,13.7].forEach(function(b,i){
       pluck(ac, dark, M(45 - (i%3)*2), T0+b, 0.14, 1.0, 0.988, 1300);
     });
     // timpani + şimşek
@@ -1499,13 +1511,13 @@
     const rg = ac.createGain();
     rg.gain.setValueAtTime(0.0001, T0);
     rg.gain.exponentialRampToValueAtTime(0.075, T0+1.2);
-    rg.gain.setValueAtTime(0.075, T0+10.6);
-    rg.gain.exponentialRampToValueAtTime(0.0001, T0+13.4);
+    rg.gain.setValueAtTime(0.075, T0+12.8);
+    rg.gain.exponentialRampToValueAtTime(0.0001, T0+15.6);
     rs.connect(hp); hp.connect(rg); rg.connect(dark);
-    rs.start(T0); rs.stop(T0+13.6);
+    rs.start(T0); rs.stop(T0+15.8);
 
     /* ---- geçiş ---- */
-    const TR = T0 + 12.4;
+    const TR = T0 + 14.6;
     noiseHit(ac, dark, TR, 2.2, 0.26, 'highpass', 5200, 0.6);        // zil
     (function(){                                                      // yukarı kayan düdük
       const o = ac.createOscillator(); o.type='sine';
@@ -1515,7 +1527,7 @@
     })();
     // yıkım gümbürtüsü: eski bloklar inerken (19.4)
     (function(){
-      const D = T0 + 19.4;
+      const D = T0 + 21.6;
       const o = ac.createOscillator(); o.type='sine';
       o.frequency.setValueAtTime(124, D); o.frequency.exponentialRampToValueAtTime(32, D+1.3);
       const g = env(ac, dark, D, 0.02, 2.4, 0.42);
@@ -1525,13 +1537,13 @@
     })();
     // inşaat ritmi: ADG yelekli işçilerin çekiç sesleri (21–28)
     for (let h=0; h<13; h++){
-      const ht = T0 + 21.0 + h*0.56;
+      const ht = T0 + 23.0 + h*0.56;
       woodblock(ac, dark, ht, 0.052);
       noiseHit(ac, dark, ht, 0.05, 0.030, 'bandpass', 3400, 2.2);
     }
 
     /* ---- 2. bölüm: neşeli çocuk şarkısı ---- */
-    const T1 = T0 + 13.2, bpm = 124, beat = 60/bpm, bar = beat*4, NBAR = 14;
+    const T1 = T0 + 15.4, bpm = 124, beat = 60/bpm, bar = beat*4, NBAR = 16;
     const happy = ac.createGain(); happy.gain.value = 0.0001; happy.connect(dest);
     happy.gain.setValueAtTime(0.0001, T1-0.2);
     happy.gain.exponentialRampToValueAtTime(1.85, T1+0.6);
@@ -1575,7 +1587,7 @@
 
     /* ---- kapanış kartı: sıcak akor, slogan altında sürdürüm ---- */
     const card = ac.createGain(); card.gain.value = 1.2; card.connect(dest);
-    const ENDC = T0 + 41.3;
+    const ENDC = T0 + 46.5;
     strum(ac, card, [48,55,60,64,67,72], ENDC, 0.16, 0.035);
     [60,64,67].forEach(function(n){ marimba(ac, card, M(n), ENDC, 0.16); });
     marimba(ac, card, M(84), ENDC+0.1, 0.1);
@@ -1588,13 +1600,13 @@
       g.gain.exponentialRampToValueAtTime(i<1?0.1:0.05, ENDC+0.6);
       g.gain.setValueAtTime(i<1?0.1:0.05, ENDC+0.7);
       g.gain.exponentialRampToValueAtTime(i<1?0.045:0.022, ENDC+1.4);
-      g.gain.setValueAtTime(i<1?0.045:0.022, ENDC+4.4);
-      g.gain.exponentialRampToValueAtTime(0.0001, ENDC+5.8);
+      g.gain.setValueAtTime(i<1?0.045:0.022, ENDC+7.2);
+      g.gain.exponentialRampToValueAtTime(0.0001, ENDC+8.4);
       o.connect(lp); lp.connect(g); g.connect(card);
-      o.start(ENDC); o.stop(ENDC+6.0);
+      o.start(ENDC); o.stop(ENDC+8.6);
     });
     // slogandan sonra son çıkış
-    const FIN = T0 + 46.35;
+    const FIN = T0 + 54.2;
     [72,76,79,84].forEach(function(n,i){ marimba(ac, card, M(n), FIN+i*0.11, 0.2); });
     strum(ac, card, [60,64,67,72], FIN+0.44, 0.15, 0.03);
     tamb(ac, card, FIN+0.44, 0.08);

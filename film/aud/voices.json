@@ -4,12 +4,16 @@
   "dur": 3.9
  },
  "l2": {
-  "text": "Keşke bizim de yeni, sapasağlam bir evimiz olsa…",
-  "dur": 4.417
+  "text": "Evlerimiz çok eski… kentsel dönüşüme girmeli!",
+  "dur": 3.708
+ },
+ "l2a": {
+  "text": "Peki… bu işin uzmanı kim?",
+  "dur": 2.638
  },
  "l2b": {
-  "text": "Bütün mahalle ADG Yapı’ya başvurdu!",
-  "dur": 2.73
+  "text": "Tabii ki ADG Yapı! Bütün mahalle başvurdu!",
+  "dur": 5.288
  },
  "l3": {
   "text": "Bakın! Bizim mahalle yenileniyor!",
@@ -33,10 +37,10 @@
  },
  "l7": {
   "text": "Teşekkürler ADG Yapı!",
-  "dur": 2.901
+  "dur": 5.639
  },
  "l8": {
   "text": "Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması… ADG Yapı!",
-  "dur": 4.626
+  "dur": 6.757
  }
 }

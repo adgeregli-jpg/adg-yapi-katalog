@@ -2,20 +2,21 @@
 # Eskiden replik anları hem build.py'de hem ffmpeg komutunda ayrı ayrı yazılıyordu
 # ve birlikte güncellenmeleri gerekiyordu; artık tek yerden okunuyor.
 
-DUR = 47.5        # film.src.html içindeki DUR ile aynı olmalı
+DUR = 55.5        # film.src.html içindeki DUR ile aynı olmalı
 
 # Repliklerin filmdeki başlangıç anları (saniye)
 AT = {
     "l1":   3.60,   # kız   — "Bizim sokak hep çamur..."
-    "l2":   7.90,   # oğlan — "Keşke bizim de yeni, sapasağlam bir evimiz olsa..."
-    "l2b": 14.40,   # oğlan — "Bütün mahalle ADG Yapı'ya başvurdu!"
-    "l3":  21.40,   # kız   — "Bakın! Bizim mahalle yenileniyor!"
-    "l3b": 24.60,   # oğlan — "Evlerimiz tam zamanında hazır oldu, hem de çok güvenli!"
-    "l4":  28.80,   # oğlan — "Arkadaşlar! Her yaşlı ev dönüşmeli!"
-    "l5":  32.30,   # kız   — "Bizim mahalle çok güzel oldu!"
-    "l6":  34.90,   # oğlan — "Artık burada korkmadan oynuyoruz!"
-    "l7":  38.20,   # kız   — "Teşekkürler ADG Yapı!"
-    "l8":  42.10,   # kız   — kapanış sloganı
+    "l2":   7.80,   # oğlan — "Evlerimiz çok eski... kentsel dönüşüme girmeli!"
+    "l2a": 11.80,   # kız   — "Peki... bu işin uzmanı kim?"
+    "l2b": 16.10,   # oğlan — "Tabii ki A... De... Ge Yapı! Bütün mahalle başvurdu!"
+    "l3":  23.60,   # kız   — "Bakın! Bizim mahalle yenileniyor!"
+    "l3b": 26.80,   # oğlan — "Evlerimiz tam zamanında hazır oldu, hem de çok güvenli!"
+    "l4":  31.00,   # oğlan — "Arkadaşlar! Her yaşlı ev dönüşmeli!"
+    "l5":  34.50,   # kız   — "Bizim mahalle çok güzel oldu!"
+    "l6":  37.10,   # oğlan — "Artık burada korkmadan oynuyoruz!"
+    "l7":  40.40,   # kız   — "Teşekkürler A... De... Ge Yapı!"
+    "l8":  47.20,   # kız   — kapanış sloganı
 }
 
 NOSUB = {"l8"}    # kapanış sloganı kartın kendisinde yazılı, alt yazı gerekmez

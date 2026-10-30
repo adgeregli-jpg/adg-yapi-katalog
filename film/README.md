@@ -1,6 +1,6 @@
 # Film üretim hattı
 
-ADG Yapı kentsel dönüşüm filminin (47,5 sn, 1280×720, 30 fps) tüm kaynağı.
+ADG Yapı kentsel dönüşüm filminin (55,5 sn, 1280×720, 30 fps) tüm kaynağı.
 Arka plan, kararlar ve neden böyle yapıldığı için depo kökündeki `CLAUDE.md`.
 
 ## Dosyalar

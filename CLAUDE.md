@@ -25,7 +25,7 @@ araştırmayı baştan yapma: aşağıdaki kararlar verilmiş, araçlar denenmi�
 | `film-kapak.jpg` | Videonun kapak karesi (filmin 16.85. saniyesi, altyazısız). |
 | `basvuru.html` | Kentsel dönüşüm başvuru formu. |
 | `animasyon.html` | 3B filmin tarayıcıda çalışan sürümü (tek dosya, sesler gömülü). Sayfada yapım aşaması/teknik not yok — müşteri istemiyor, geri ekleme. |
-| `ADG_Yapi_Kentsel_Donusum_3D.mp4` | Filmin 47,5 sn'lik MP4 çıktısı (1280×720, 30 fps). |
+| `ADG_Yapi_Kentsel_Donusum_3D.mp4` | Filmin 55,5 sn'lik MP4 çıktısı (1280×720, 30 fps). |
 | `ADG_Yapi_Reklam_Filmi_Muzikli5.mp4` | Müşterinin kendi tanıtım filmi — dikey (1080×1920), 34 sn. Sayfa açılışında çıkan pencerede oynar: sessiz başlar (tarayıcılar sesli otomatik oynatmayı engeller), sağ üstte çarpı, altta "Sesi aç" düğmesi var. Kapatılınca `sessionStorage` ile hatırlanır, aynı oturumda tekrar çıkmaz. Film bölümündeki "Tanıtım Filmini İzle" düğmesi pencereyi sesli açar. |
 | `ADG_Yapi_Tanitim_Katalogu.pdf` | Kurumsal katalog. |
 | `film/` | Filmin tüm üretim hattı: kaynak, betikler, seslendirmeler. |
@@ -36,19 +36,21 @@ Yayındaki site: https://adgeregli-jpg.github.io/adg-yapi-katalog/ (GitHub Pages
 
 ## Film — verilmiş kararlar
 
-**Senaryo (47,5 sn), 5 perde:**
+**Senaryo (55,5 sn), 5 perde:**
 
-1. **Eski mahalle (0–12,3)** — yağmur, çamur, az katlı eğik evler. Çamurda
-   şemsiyeli kız konuşur; üst kattaki pencereden bakan oğlan konuşur.
-2. **ADG Yapı iş yeri (13,2–18,9)** — iş yeri yerine oturur, bütün mahalle
+1. **Eski mahalle (0–14,5)** — yağmur, çamur, az katlı eğik evler. Çamurda
+   şemsiyeli kız yakınır; pencereden bakan oğlan "evlerimiz kentsel dönüşüme
+   girmeli" der; kız ona "peki bu işin uzmanı kim?" diye sorar. Cevap logo
+   damgası (14,7) ve oğlanın "Tabii ki A-De-Ge Yapı!" repliğidir.
+2. **ADG Yapı iş yeri (15,4–21,1)** — iş yeri yerine oturur, bütün mahalle
    başvuru için kapısına yürür. Vitrinde logo + **"FARKLI BİR MÜTEAHHİTLİK
    FİRMASI"**, çatı tabelasında logo, yanda "KENTSEL DÖNÜŞÜM BAŞVURU MERKEZİ".
-3. **Yıkım (19,0–21,6)** — evler kendi içine çöker, toz bulutu.
-4. **İnşaat (20,6–28,6)** — kuleler kademeli yükselir; **ADG logolu turuncu
+3. **Yıkım (21,2–23,8)** — evler kendi içine çöker, toz bulutu.
+4. **İnşaat (22,8–30,8)** — kuleler kademeli yükselir; **ADG logolu turuncu
    yelek ve sarı baret giyen işçiler** çalışır (çakma, işaret etme, kalas
    taşıma, selam). Ekranda sırayla taahhüt rozetleri açılır:
    *Zamanında teslim · Kaliteli işçilik · Güvenli yapılar*.
-5. **Yeni mahalle (27,8–41,3)** — çim, çiçek, ağaç, kelebek, kuş, gülen güneş;
+5. **Yeni mahalle (30,0–46,5)** — çim, çiçek, ağaç, kelebek, kuş, gülen güneş;
    gülen çocuklar, zıplayan top, balon, arka planda yürüyen aile. Sonra
    kapanış kartı: logo, slogan, üç taahhüt rozeti, iletişim.
 
@@ -58,15 +60,19 @@ Yayındaki site: https://adgeregli-jpg.github.io/adg-yapi-katalog/ (GitHub Pages
 - İşçilerin yeleğinde ADG logosu olmalı.
 - Zamanında teslim / kalite / güvenlik vurguları geçmeli.
 - Görsel dil Pepee–Niloya tadında: kocaman gözler, tombul gövde, kalın kontur,
-  zıplama, esneme-sıkışma, doygun renkler.
+  doygun renkler.
+- **Çocuklar zıplamaz** (müşteri istemedi; `bob` yok). Yerinde hafif salınım,
+  kollar yana açık el sallama yeterli.
+- Diyalogda "evlerimiz kentsel dönüşüme girmeli / bu işin uzmanı kim?" soru-cevabı
+  geçmeli.
+- Marka **"A — Deee — Ge Yapı"** diye harf harf, uzatılarak söylenmeli.
 
 **Teknik:** three.js **r0.150.1 UMD** ile gerçek 3B, `MeshToonMaterial` +
 3 kademeli gradyan + `BackSide` kontur. Üstte 1280×720 2B tuval (logo, alt yazı,
 rozetler, kapanış kartı, yıldızlar, şimşek). Her şey `renderAt(t)` ile saf zaman
 fonksiyonu — bu sayede kare kare çekilebiliyor.
 
-**Çizgi film hareket kuralları** (`poseChar`): zıplarken esneme-sıkışma,
-kafanın gecikmeli takibi, karaktere göre kaydırılmış göz kırpma, konuşurken
+**Çizgi film hareket kuralları** (`poseChar`): kafanın gecikmeli takibi, karaktere göre kaydırılmış göz kırpma, konuşurken
 ağız + dil. Yerine oturan her şey (kule, ağaç, çiçek, logo, rozet) `back()`
 geri yaylanmalı yumuşatmasıyla girer; kuleler daha yumuşak olan `grow()` ile.
 
@@ -75,15 +81,16 @@ geri yaylanmalı yumuşatmasıyla girer; kuleler daha yumuşak olan `grow()` ile
 | t | kim (ses) | replik |
 |---|---|---|
 | 3,60 | kız (Çağlayan) | "Bizim sokak hep çamur… hiç oyun oynayamıyoruz." |
-| 7,90 | oğlan (AliCan) | "Keşke bizim de yeni, sapasağlam bir evimiz olsa…" |
-| 14,40 | oğlan | "Bütün mahalle ADG Yapı'ya başvurdu!" |
-| 21,40 | kız | "Bakın! Bizim mahalle yenileniyor!" |
-| 24,60 | oğlan | "Evlerimiz tam zamanında hazır oldu, hem de çok güvenli!" |
-| 28,80 | oğlan | "Arkadaşlar! Her yaşlı ev dönüşmeli!" |
-| 32,30 | kız | "Bizim mahalle çok güzel oldu!" |
-| 34,90 | oğlan | "Artık burada korkmadan oynuyoruz!" |
-| 38,20 | kız | "Teşekkürler ADG Yapı!" |
-| 42,10 | kız | "Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması… ADG Yapı!" |
+| 7,80 | oğlan (AliCan), pencerede | "Evlerimiz çok eski… kentsel dönüşüme girmeli!" |
+| 11,80 | kız | "Peki… bu işin uzmanı kim?" |
+| 16,10 | oğlan | "Tabii ki A-De-Ge Yapı! Bütün mahalle başvurdu!" |
+| 23,60 | kız | "Bakın! Bizim mahalle yenileniyor!" |
+| 26,80 | oğlan | "Evlerimiz tam zamanında hazır oldu, hem de çok güvenli!" |
+| 31,00 | oğlan | "Arkadaşlar! Her yaşlı ev dönüşmeli!" |
+| 34,50 | kız | "Bizim mahalle çok güzel oldu!" |
+| 37,10 | oğlan | "Artık burada korkmadan oynuyoruz!" |
+| 40,40 | kız | "Teşekkürler A-De-Ge Yapı!" |
+| 47,20 | kız | "Kentsel dönüşüm odaklı, farklı bir müteahhitlik firması… A-De-Ge Yapı!" |
 
 **Çözülmüş tuzaklar (tekrar düşme):**
 - `THREE.Points` / `InstancedMesh` konumları her karede yazılıyorsa
@@ -94,6 +101,12 @@ geri yaylanmalı yumuşatmasıyla girer; kuleler daha yumuşak olan `grow()` ile
 - Pencere ışığı sönünce `winG` de gizlenmeli, yoksa cephede siyah panel kalır.
 - Şemsiye kolun çocuğuna bağlanırsa yüzü kapatır; gövdeye, omzun yanına bağlı.
 - Baret `y≈2,33`ten aşağı inerse gözleri kapatır.
+- **Kol yönü:** `poseChar`'da `armLz`/`armRz` = kolun yana açılması, **pozitif =
+  dışa**. Önceden işaret karışıktı; "dışa" sanılan değerler kolu gövdenin/kafanın
+  içine çeviriyor, müşteri "kolları kayboluyor" dedi. Kolu havaya kaldırmak için
+  `armR` (öne) değil `armRz≈2,2` (yana-yukarı) kullan.
+- Camdaki oğlanın bacakları gizli (`legs.visible=false`), yoksa cephenin önüne
+  sarkıyor.
 
 ## Seslendirme — ÇÖZÜLDÜ, baştan arama
 
@@ -112,10 +125,13 @@ geri yaylanmalı yumuşatmasıyla girer; kuleler daha yumuşak olan `grow()` ile
   `film/el_manifest.tsv`ye ekle → `python3 el_pick.py` ile indir, tanıt, seç.
   İmzalı URL'ler 2 saatte dolar; süresi geçmişse `aud/el/*.mp3` zaten diskte
   olduğundan yeniden indirmez.
-- **"ADG" yazımı:** ElevenLabs'e **`A De Ge`** yazılır; `medium` modeli bunu
-  "adege/ADG" diye duyuyor — doğru okunuş. (Eski Supertonic motorunda küçük
-  harf `a de ge` şarttı; o kural artık geçerli değil ama büyük harfli düz
-  `ADG` yazmayı yine deneme.) Altyazıda daima "ADG Yapı" yazar; `el_pick.py`
+- **"ADG" yazımı — müşteri iki kez düzeltti:** ElevenLabs'e
+  **`A... Deee... Ge... Yapı!`** yazılır. Böylece harfler ayrı ve uzun çıkar
+  (ölçüm: A 0,4 sn · De 0,7 sn · Ge 0,7 sn, aralarında boşluk). `A De Ge`
+  yazımı "adege" diye tek kelimede yutuluyordu (0,36 sn), müşteri "olmuyor"
+  dedi. Doğrulama: `medium` "A, D, G, Yapı" gibi **ayrı parçalar** duymalı;
+  `el_pick.py` bunu `"a d g"` kontrolüyle zorunlu tutuyor. Kelime zaman
+  damgalarıyla ölçmek için `word_timestamps=True`. Altyazıda daima "ADG Yapı" yazar; `el_pick.py`
   üretim istemi ile altyazıyı ayrı tutar.
 - **Kalite kapısı (zorunlu):** `el_pick.py` her denemeyi `asr.py`
   (faster-whisper `small`) ile dinler, beş harf ve üzeri anahtar kelimeleri
@@ -144,16 +160,18 @@ geri yaylanmalı yumuşatmasıyla girer; kuleler daha yumuşak olan `grow()` ile
 Sayfanın içinde Web Audio ile sentezlenir (harici dosya yok), MP4 için
 `FILM.renderMusic()` çevrim dışı render eder.
 
-- **Açılış (0–13,4 sn):** üçgen dalga tremolo yaylılar, klarnet tadında hüzünlü
+- **Açılış (0–15,6 sn):** üçgen dalga tremolo yaylılar, klarnet tadında hüzünlü
   ezgi, boğuk telli vuruşlar, timpani, yağmur gürültüsü. Hüzünlü — korku değil.
-- **Geçiş (12,4 sn):** zil + yukarı kayan düdük — logo damgasıyla birlikte umut.
-- **Yıkım (19,4 sn):** derin gümbürtü + gürültü darbeleri.
-- **İnşaat (21–28 sn):** neşeli bölümün üstünde çekiç ritmi (tahta blok).
-- **Neşeli bölüm (13,2 sn–40,3):** 124 BPM çocuk şarkısı, 14 ölçü (`NBAR`). **Karplus-Strong ukulele**
+- **Geçiş (14,6 sn):** zil + yukarı kayan düdük — logo damgasıyla birlikte umut.
+- **Yıkım (21,6 sn):** derin gümbürtü + gürültü darbeleri.
+- **İnşaat (23–30 sn):** neşeli bölümün üstünde çekiç ritmi (tahta blok).
+- **Neşeli bölüm (15,4 sn–46,4):** 124 BPM çocuk şarkısı, 16 ölçü (`NBAR`). **Karplus-Strong ukulele**
   (`ksBuf()` ile tampon sentezi), **marimba** (sinüs + 4. harmonik + tahta tık),
   marakas, tahta blok, tef, telli bas. Niloya tadı istendi.
-- **Kapanış (41,3 sn):** ukulele akoru + marimba + sıcak yastık, slogandan
-  sonra (46,35) marimba çıkışı.
+- **Kapanış (46,5 sn):** ukulele akoru + marimba + sıcak yastık (slogan
+  boyunca kısılır), slogandan sonra (54,2) marimba çıkışı.
+- Karışımda yan zincir bırakma süresi **800 ms**: kısa olursa müzik kelime
+  aralarında kabarıp marka adını bozuyor.
 - **Yapma:** saf sinüs "ksilofon" — piyano/çan gibi duyuluyor, müşteri
   beğenmedi.
 
@@ -168,7 +186,7 @@ Sayfanın içinde Web Audio ile sentezlenir (harici dosya yok), MP4 için
 - Playwright + Chromium kurulu; WebGL için
   `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader`.
 - ffmpeg 6.1 var ve `soxr`, `sidechaincompress`, `alimiter` içeriyor.
-- 1425 karelik çekim ~11 dakika sürer (~0,47 sn/kare).
+- 1665 karelik çekim ~13 dakika sürer (~0,47 sn/kare).
 - `film/` altındaki betikler `__dirname`/çalışma dizinini kök sayar; depo
   içinden olduğu gibi çalışırlar.
 
