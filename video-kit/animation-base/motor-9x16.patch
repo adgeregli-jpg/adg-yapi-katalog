@@ -1,0 +1,61 @@
+diff --git a/render.mjs b/render.mjs
+index e675a87..45f9c2d 100644
+--- a/render.mjs
++++ b/render.mjs
+@@ -64,7 +64,7 @@ const gpu = args['soft-gl'] ? ['--use-angle=swiftshader', '--enable-unsafe-swift
+ const sandbox = process.platform === 'linux' ? ['--no-sandbox'] : [];
+ const browser = await puppeteer.launch({
+   executablePath: CHROME, headless: true, protocolTimeout: 0,
+-  args: [...sandbox, '--allow-file-access-from-files', '--ignore-gpu-blocklist', ...gpu, '--enable-gpu-rasterization', '--window-size=1920,1080', '--disable-renderer-backgrounding', '--disable-background-timer-throttling']
++  args: [...sandbox, '--allow-file-access-from-files', '--ignore-gpu-blocklist', ...gpu, '--enable-gpu-rasterization', '--window-size=1080,1920', '--disable-renderer-backgrounding', '--disable-background-timer-throttling']
+ });
+ async function openPage(tag = '') {
+   const page = await browser.newPage();
+diff --git a/src/core.js b/src/core.js
+index f6d43a2..b56c6b0 100644
+--- a/src/core.js
++++ b/src/core.js
+@@ -1,6 +1,6 @@
+ // core.js: constants, helpers, paper, paint wrapper, compositing and render hooks.
+ // Length and rhythm come from PROJECT in config.js.
+-const W = 1920, H = 1080;
++const W = PROJECT.w || 1920, H = PROJECT.h || 1080;
+ const BPM = PROJECT.bpm, BEAT = 60 / BPM, OFF = PROJECT.offset || 0, BOIL = 12, DUR = PROJECT.duration;
+ const TAU = Math.PI * 2;
+ const PAL = {
+diff --git a/studio.html b/studio.html
+index b330d73..36cac37 100644
+--- a/studio.html
++++ b/studio.html
+@@ -7,7 +7,7 @@
+ <style>
+   html, body { margin: 0; background: #1b1820; color: #eee; font: 13px system-ui, sans-serif; }
+   main { padding: 12px; display: grid; gap: 8px; }
+-  #out { width: min(100%, 1280px); aspect-ratio: 16 / 9; height: auto; background: #F3EBDC; }
++  #out { width: auto; height: 80vh; max-width: 100%; background: #F3EBDC; }
+   .p5Canvas { display: none !important; }
+   .bar { display: flex; gap: 10px; align-items: center; max-width: 1280px; }
+   #scrub { flex: 1; }
+@@ -18,18 +18,20 @@
+ </head>
+ <body>
+ <main>
+-  <canvas id="out" width="1920" height="1080"></canvas>
++  <canvas id="out"></canvas>
+   <div class="bar"><input id="scrub" type="range" min="0" max="11" step="0.0417" value="0"><span id="tt">loading…</span></div>
+ </main>
+ <!-- engine -->
+ <script src="src/config.js"></script>
+ <script src="src/core.js"></script>
++<script>{const c=document.getElementById("out");c.width=W;c.height=H;}</script>
+ <script src="src/clawd.js"></script>
+ <script src="src/timeline.js"></script>
+ <!-- reference sheets (standalone loops) -->
+ <script src="src/sheets.js"></script>
+ <!-- your video: add a script per scene file, in order -->
+-<script src="src/scenes/demo.js"></script>
++<script src="src/adg.js"></script>
++<script src="src/scenes/adg_ev.js"></script>
+ <script>
+   // Open studio.html?loop=emotions (or views) to scrub a standalone loop instead of the video.
+   const q = new URLSearchParams(location.search).get('loop'); if (q && LOOPS[q]) window.LOOP = LOOPS[q];

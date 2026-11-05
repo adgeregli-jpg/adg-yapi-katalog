@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="hat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ff6a13"/></linearGradient>
+    <linearGradient id="vest" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a26"/><stop offset="1" stop-color="#f05a08"/></linearGradient>
+    <radialGradient id="skin" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ffe2c6"/><stop offset="1" stop-color="#f7c49c"/></radialGradient>
+  </defs>
+  <g stroke="#3a1400" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+    <!-- gölge -->
+    <ellipse cx="300" cy="765" rx="150" ry="20" fill="#6b2200" opacity=".18" stroke="none"/>
+    <!-- bacaklar + botlar -->
+    <g id="bacaklar">
+      <rect x="225" y="625" width="58" height="95" rx="24" fill="#6b2200"/>
+      <rect x="317" y="625" width="58" height="95" rx="24" fill="#6b2200"/>
+      <path d="M205 745 q0-42 45-42 h30 q12 0 12 14 v28 z" fill="#4a2a14"/>
+      <path d="M395 745 q0-42 -45-42 h-30 q-12 0 -12 14 v28 z" fill="#4a2a14"/>
+    </g>
+    <!-- kollar -->
+    <g id="kolSol"><path d="M180 500 q-70 40 -60 120" fill="none" stroke="#3a1400" stroke-width="52"/><path d="M180 500 q-70 40 -60 120" fill="none" stroke="#fff" stroke-width="34"/><circle cx="120" cy="628" r="30" fill="url(#skin)"/></g>
+    <g id="kolSag"><path d="M420 500 q85 -10 105 -95" fill="none" stroke="#3a1400" stroke-width="52"/><path d="M420 500 q85 -10 105 -95" fill="none" stroke="#fff" stroke-width="34"/>
+      <g transform="rotate(12 527 395)">
+        <rect x="508" y="340" width="13" height="40" rx="6.5" fill="#f7c49c"/>
+        <rect x="520" y="334" width="13" height="44" rx="6.5" fill="#f7c49c"/>
+        <rect x="532" y="338" width="13" height="42" rx="6.5" fill="#f7c49c"/>
+        <rect x="544" y="348" width="12" height="34" rx="6" fill="#f7c49c"/>
+        <rect x="484" y="380" width="34" height="14" rx="7" fill="#f7c49c" transform="rotate(-30 500 387)"/>
+        <rect x="505" y="365" width="52" height="50" rx="22" fill="url(#skin)"/>
+        <rect x="510" y="360" width="44" height="22" fill="#f7c49c" stroke="none"/>
+      </g></g>
+    <!-- gövde: beyaz tişört + turuncu yelek -->
+    <g id="govde">
+      <path d="M170 520 q0-80 130-80 q130 0 130 80 v95 q0 40 -40 40 h-180 q-40 0 -40 -40 z" fill="#ffffff"/>
+      <path d="M175 520 q5-70 85-78 l20 210 h-70 q-35 0 -35 -38 z" fill="url(#vest)"/>
+      <path d="M425 520 q-5-70 -85-78 l-20 210 h70 q35 0 35 -38 z" fill="url(#vest)"/>
+      <!-- reflektif şeritler -->
+      <path d="M178 585 h97 M325 585 h97" stroke="#fdf3ec" stroke-width="14"/>
+      <path d="M178 585 h97 M325 585 h97" stroke="#ffd34d" stroke-width="5"/>
+      <!-- yelekte ADG logo -->
+      <g stroke="#ffffff" stroke-width="4.5" fill="none" stroke-linejoin="miter">
+        <path d="M345 545 l20 -34 l20 34"/>
+      </g>
+      <rect x="358" y="538" width="14" height="5" fill="#fff" stroke="none"/>
+      <text x="365" y="567" text-anchor="middle" font-family="Jost, Montserrat, Arial, sans-serif" font-size="15" font-weight="500" letter-spacing="2" fill="#fff" stroke="none">ADG</text>
+    </g>
+    <!-- kafa -->
+    <g id="kafa">
+      <circle cx="300" cy="300" r="165" fill="url(#skin)"/>
+      <!-- kulaklar -->
+      <circle cx="137" cy="320" r="30" fill="#f7c49c"/><circle cx="463" cy="320" r="30" fill="#f7c49c"/>
+      <circle cx="300" cy="300" r="160" fill="url(#skin)" stroke="none"/>
+      <!-- yanaklar -->
+      <ellipse cx="200" cy="375" rx="30" ry="18" fill="#ff8f6b" opacity=".55" stroke="none"/>
+      <ellipse cx="400" cy="375" rx="30" ry="18" fill="#ff8f6b" opacity=".55" stroke="none"/>
+      <!-- gözler -->
+      <g id="gozler">
+        <ellipse cx="240" cy="315" rx="38" ry="46" fill="#fff"/>
+        <ellipse cx="360" cy="315" rx="38" ry="46" fill="#fff"/>
+        <circle cx="247" cy="322" r="25" fill="#6b2200" stroke="none"/>
+        <circle cx="353" cy="322" r="25" fill="#6b2200" stroke="none"/>
+        <circle cx="249" cy="324" r="13" fill="#1c0a00" stroke="none"/>
+        <circle cx="351" cy="324" r="13" fill="#1c0a00" stroke="none"/>
+        <circle cx="257" cy="310" r="9" fill="#fff" stroke="none"/>
+        <circle cx="361" cy="310" r="9" fill="#fff" stroke="none"/>
+        <circle cx="240" cy="334" r="4" fill="#fff" stroke="none"/>
+        <circle cx="344" cy="334" r="4" fill="#fff" stroke="none"/>
+      </g>
+      <!-- kaşlar -->
+      <path d="M212 266 q28 -12 54 -1 M334 265 q28 -11 54 1" fill="none" stroke-width="8"/>
+      <!-- ağız -->
+      <path id="agiz" d="M262 385 q38 42 76 0 q-38 12 -76 0 z" fill="#c2341b"/>
+      <path d="M285 405 q15 8 30 0" fill="none" stroke="#ff8f8f" stroke-width="7"/>
+    </g>
+    <!-- baret -->
+    <g id="baret">
+      <path d="M140 225 q0 -125 160 -125 q160 0 160 125 z" fill="url(#hat)"/>
+            <path d="M215 112 q-18 55 -16 113 M385 112 q18 55 16 113" fill="none" stroke="#e85a0a" stroke-width="10"/>
+      <path d="M115 228 q185 -25 370 0 q8 26 -10 30 q-175 -18 -350 0 q-18 -4 -10 -30 z" fill="#ff6a13"/>
+      <!-- baret üstü logo: A + çubuk -->
+      <g stroke="#fff" stroke-width="6" fill="none" stroke-linejoin="miter">
+        <path d="M262 206 l38 -66 l38 66" stroke-width="8"/>
+      </g>
+      <rect x="287" y="194" width="26" height="10" fill="#fff" stroke="none"/>
+      <path d="M180 140 q30 -28 70 -32" fill="none" stroke="#ffc59a" stroke-width="12" opacity=".9"/>
+    </g>
+  </g>
+</svg>
