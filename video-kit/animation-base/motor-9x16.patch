@@ -12,7 +12,7 @@ index e675a87..45f9c2d 100644
  async function openPage(tag = '') {
    const page = await browser.newPage();
 diff --git a/src/core.js b/src/core.js
-index f6d43a2..b56c6b0 100644
+index f6d43a2..28f9e88 100644
 --- a/src/core.js
 +++ b/src/core.js
 @@ -1,6 +1,6 @@
@@ -23,11 +23,24 @@ index f6d43a2..b56c6b0 100644
  const BPM = PROJECT.bpm, BEAT = 60 / BPM, OFF = PROJECT.offset || 0, BOIL = 12, DUR = PROJECT.duration;
  const TAU = Math.PI * 2;
  const PAL = {
+@@ -277,7 +277,7 @@ async function setup() {
+   brush.scaleBrushes(5); defineBrushes();
+   paperG = makePaper(); grainC = makeGrain(); glowTex = makeGlowTex(); letG = createGraphics(W, H); letG.pixelDensity(1);
+   outC = document.getElementById('out'); outX = outC.getContext('2d');
+-  await document.fonts.load('100px "Permanent Marker"');
++  await document.fonts.load('100px "Permanent Marker"').catch(() => {});
+   window.ready = true;
+   if (!location.search.includes('render')) devUI();
+ }
 diff --git a/studio.html b/studio.html
-index b330d73..36cac37 100644
+index b330d73..f25c842 100644
 --- a/studio.html
 +++ b/studio.html
-@@ -7,7 +7,7 @@
+@@ -3,11 +3,10 @@
+ <head>
+ <meta charset="utf-8">
+ <title>Clawd studio</title>
+-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=block">
  <style>
    html, body { margin: 0; background: #1b1820; color: #eee; font: 13px system-ui, sans-serif; }
    main { padding: 12px; display: grid; gap: 8px; }
@@ -36,7 +49,7 @@ index b330d73..36cac37 100644
    .p5Canvas { display: none !important; }
    .bar { display: flex; gap: 10px; align-items: center; max-width: 1280px; }
    #scrub { flex: 1; }
-@@ -18,18 +18,20 @@
+@@ -18,18 +17,20 @@
  </head>
  <body>
  <main>
@@ -55,7 +68,7 @@ index b330d73..36cac37 100644
  <!-- your video: add a script per scene file, in order -->
 -<script src="src/scenes/demo.js"></script>
 +<script src="src/adg.js"></script>
-+<script src="src/scenes/adg_ev.js"></script>
++<script src="src/scenes/adg_cag.js"></script>
  <script>
    // Open studio.html?loop=emotions (or views) to scrub a standalone loop instead of the video.
    const q = new URLSearchParams(location.search).get('loop'); if (q && LOOPS[q]) window.LOOP = LOOPS[q];
