@@ -1,8 +1,8 @@
 diff --git a/render.mjs b/render.mjs
-index e675a87..45f9c2d 100644
+index e675a87..40d329e 100644
 --- a/render.mjs
 +++ b/render.mjs
-@@ -64,7 +64,7 @@ const gpu = args['soft-gl'] ? ['--use-angle=swiftshader', '--enable-unsafe-swift
+@@ -64,14 +64,14 @@ const gpu = args['soft-gl'] ? ['--use-angle=swiftshader', '--enable-unsafe-swift
  const sandbox = process.platform === 'linux' ? ['--no-sandbox'] : [];
  const browser = await puppeteer.launch({
    executablePath: CHROME, headless: true, protocolTimeout: 0,
@@ -11,6 +11,15 @@ index e675a87..45f9c2d 100644
  });
  async function openPage(tag = '') {
    const page = await browser.newPage();
+   page.on('console', m => { if (['error', 'warn'].includes(m.type())) console.log(`[page${tag}]`, m.text()); });
+   page.on('pageerror', e => console.log(`[page error${tag}]`, e.message));
+-  await page.goto(pathToFileURL(resolve('studio.html')).href + '?render', { waitUntil: 'networkidle0' });
+-  await page.waitForFunction('window.ready === true', { timeout: 60000 });
++  await page.goto(pathToFileURL(resolve('studio.html')).href + '?render', { waitUntil: 'load', timeout: 0 });
++  await page.waitForFunction('window.ready === true', { timeout: 0 });
+   if (args.loop) {
+     const ok = await page.evaluate(name => { if (!LOOPS[name]) return false; window.LOOP = LOOPS[name]; return true; }, args.loop);
+     if (!ok) { console.error(`no loop named "${args.loop}"`); process.exit(1); }
 diff --git a/src/core.js b/src/core.js
 index f6d43a2..28f9e88 100644
 --- a/src/core.js
