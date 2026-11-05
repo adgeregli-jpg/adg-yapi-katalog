@@ -265,7 +265,7 @@
       letter('ADG', W / 2 + 70 * c, 1555, 120 * c, ADG.cream, { screen: true, ink: false, font: `300 ${Math.round(150 * c)}px "DejaVu Sans", sans-serif` });
       letter('Y A P I', W / 2 + 70 * c, 1680, 50 * c, ADG.cream, { screen: true, ink: false, font: `${Math.round(48 * c)}px "DejaVu Sans", sans-serif` });
     }
-    if (lt > dur - .5) { flushLetters(); iris(W / 2, 1150, lerp(1400, 0, easeIn(seg(lt, dur - .5, dur - .05))), ADG.maroon); }
+    if (lt > dur - .5) { flushLetters(); flash(ease(seg(lt, dur - .5, dur - .1)), ADG.maroon); }
   }
 
   shots([[0, shotA], [4, shotB], [8, shotC], [12.5, shotD]]);
