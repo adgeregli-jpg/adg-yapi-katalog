@@ -29,6 +29,7 @@ araştırmayı baştan yapma: aşağıdaki kararlar verilmiş, araçlar denenmi�
 | `ADG_Yapi_Reklam_Filmi_Muzikli5.mp4` | Müşterinin kendi tanıtım filmi — dikey (1080×1920), 34 sn. Sayfa açılışında çıkan pencerede oynar: sessiz başlar (tarayıcılar sesli otomatik oynatmayı engeller), sağ üstte çarpı, altta "Sesi aç" düğmesi var. Kapatılınca `sessionStorage` ile hatırlanır, aynı oturumda tekrar çıkmaz. Film bölümündeki "Tanıtım Filmini İzle" düğmesi pencereyi sesli açar. |
 | `ADG_Yapi_Tanitim_Katalogu.pdf` | Kurumsal katalog. |
 | `film/` | Filmin tüm üretim hattı: kaynak, betikler, seslendirmeler. |
+| `hediye/` | Hediyelik baskı dosyaları: logo + "Güvenle yükselen yarınlar." (müşteri seçti). Turuncu / beyaz / tek renk siyah, telefonlu ve telefonsuz; SVG (yazılar yola çevrili) + 300 dpi PNG + A4 prova PDF. Üretim: `python3 hediye/uret.py && node hediye/cikti.js`. |
 
 Tarayıcı sürümü (artifact): https://claude.ai/artifact/PrtjZHjwxp1Go16kFR3hRh
 Yayındaki site: https://adgeregli-jpg.github.io/adg-yapi-katalog/ (GitHub Pages,
