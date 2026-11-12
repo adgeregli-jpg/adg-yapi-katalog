@@ -59,16 +59,34 @@ Yayındaki site: https://adgeregli-jpg.github.io/adg-yapi-katalog/ (GitHub Pages
 - İş yeri vitrininde slogan ve logo okunur olmalı.
 - İşçilerin yeleğinde ADG logosu olmalı.
 - Zamanında teslim / kalite / güvenlik vurguları geçmeli.
-- Görsel dil Pepee–Niloya tadında: kocaman gözler, tombul gövde, kalın kontur,
-  doygun renkler.
+- Görsel dil: **gerçekçi 3B çizgi film** (müşteri düz/karton görünümü
+  beğenmedi, "daha gerçekçi çizgi film" istedi). Yumuşak geçişli gölgelendirme,
+  yumuşak gölge, kontur yok, ayrıntılı bina ve çevre. Düz "toon" boyaya ve
+  kontur çizgisine geri dönme.
 - **Çocuklar zıplamaz** (müşteri istemedi; `bob` yok). Yerinde hafif salınım,
   kollar yana açık el sallama yeterli.
 - Diyalogda "evlerimiz kentsel dönüşüme girmeli / bu işin uzmanı kim?" soru-cevabı
   geçmeli.
 - Marka **"A — Deee — Ge Yapı"** diye harf harf, uzatılarak söylenmeli.
 
-**Teknik:** three.js **r0.150.1 UMD** ile gerçek 3B, `MeshToonMaterial` +
-3 kademeli gradyan + `BackSide` kontur. Üstte 1280×720 2B tuval (logo, alt yazı,
+**Teknik:** three.js **r0.150.1 UMD** ile gerçek 3B. `toon()` yardımcı
+fonksiyonu adını korudu ama artık `MeshStandardMaterial` döndürüyor (yumuşak
+gölgelendirme); `addOutline()` boş. Işık: yarımküre + güneş (PCFSoft gölge,
+`radius 5`) + karşıdan soğuk dolgu ışığı; gökyüzü gradyan kubbe (`skyDome`).
+Gündüz sisi 130'dan başlamalı — daha yakın başlarsa görüntü soluyor.
+
+**Sahne öğeleri (hepsi `film.src.html` içinde, kodla kurulur):**
+- *Apartmanlar* (`NEWB`, `aptFacade`): kat yüksekliği 3 birim, pencere dokusu
+  kat×aks karolanır; 3B balkonlar (`InstancedMesh`), renkli cephe bandı, taş
+  zemin kat, saçaklı cam giriş, çatıda merdiven kulesi + güneş paneli. Arkada
+  ikinci sıra bloklar (`farBlocks`) aynı anda yükselir.
+- *Mahalle*: asfalt yol + kaldırımlar + park yürüyüş yolu (`roadG`, `green` ile
+  belirir); sokak lambaları, banklar, kaydırak, salıncak, çalılar (`parkProps`,
+  `park` ile zıplayarak oturur); 14 ağaç; uzak tepeler.
+- *Karakterler* (`makeChar`): kısa kollu tişört + ten rengi ön kol, şort + bacak
+  + çorap + tabanlı ayakkabı (yetişkinlerde uzun paça/kol), boyun, kulak, öne
+  düşen perçem, tokalı örgüler, renkli iris + kirpik çizgisi; nefes alma ve
+  konuşurken baş hareketi `poseChar` içinde. Üstte 1280×720 2B tuval (logo, alt yazı,
 rozetler, kapanış kartı, yıldızlar, şimşek). Her şey `renderAt(t)` ile saf zaman
 fonksiyonu — bu sayede kare kare çekilebiliyor.
 
