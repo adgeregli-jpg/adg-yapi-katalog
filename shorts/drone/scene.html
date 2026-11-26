@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<title>Drone Yeğeni Kaptı — animatik</title>
+<style>
+  html,body{margin:0;background:#111}
+  #stage{position:relative;width:540px;height:960px;overflow:hidden}
+  #stage canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+</style>
+<script src="../node_modules/three/build/three.min.js"></script>
+</head><body>
+<div id="stage"><canvas id="gl"></canvas><canvas id="ui" width="1080" height="1920"></canvas></div>
+<script>
+(function(){
+const W=1080,H=1920, DUR=21;
+const clamp=(v,a,b)=>v<a?a:(v>b?b:v), lerp=(a,b,t)=>a+(b-a)*t;
+const sm=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const back=(x)=>{x=clamp(x,0,1);const c1=1.68,c3=c1+1,u=x-1;return 1+c3*u*u*u+c1*u*u;};
+
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('gl'),antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(W,H,false); renderer.setPixelRatio(1);
+renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x8fd3ff);
+scene.fog=new THREE.Fog(0xbfe6ff,60,190);
+const camera=new THREE.PerspectiveCamera(48,W/H,0.3,400);
+
+const gradTex=(function(){const d=new Uint8Array([110,110,110,255,190,190,190,255,255,255,255,255]);
+  const t=new THREE.DataTexture(d,3,1,THREE.RGBAFormat);t.minFilter=t.magFilter=THREE.NearestFilter;t.needsUpdate=true;return t;})();
+const toon=(c,o)=>new THREE.MeshToonMaterial(Object.assign({color:c,gradientMap:gradTex},o||{}));
+const basic=c=>new THREE.MeshBasicMaterial({color:c});
+const OUT=new THREE.MeshBasicMaterial({color:0x2e1a10,side:THREE.BackSide});
+function outl(m,k){const o=new THREE.Mesh(m.geometry,OUT);o.scale.setScalar(k||1.08);m.add(o);return m;}
+
+scene.add(new THREE.HemisphereLight(0xdff3ff,0x6a8a4a,0.9));
+const sun=new THREE.DirectionalLight(0xffffff,0.55); sun.position.set(20,40,25); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,near:1,far:120});
+scene.add(sun);
+
+// ---------- karakter ----------
+function makeChar(o){
+  const G=new THREE.Group(), R=o.headR||0.42;
+  const skin=toon(o.skin), shirt=toon(o.shirt), pants=toon(o.pants);
+  const hipY=o.hipY||0.72, shY=o.shY||1.2, headY=o.headY||1.6;
+  const legs=[],arms=[];
+  for(const d of[-1,1]){
+    const p=new THREE.Group();p.position.set(d*0.17,hipY,0);
+    const l=outl(new THREE.Mesh(new THREE.CapsuleGeometry(0.135,hipY-0.34,4,10),pants),1.1);l.position.y=-(hipY-0.34)/2-0.1;p.add(l);
+    const s=outl(new THREE.Mesh(new THREE.SphereGeometry(0.2,12,10),toon(0x3a2f26)),1.07);s.scale.set(1,0.6,1.4);s.position.set(0,-hipY+0.1,0.09);p.add(s);
+    G.add(p);legs.push(p);
+  }
+  const tw=o.belly||0.31;
+  const torso=outl(new THREE.Mesh(new THREE.CapsuleGeometry(tw,shY-hipY-0.1,4,14),shirt),1.09);
+  torso.position.y=(hipY+shY)/2+0.02; torso.castShadow=true; G.add(torso);
+  for(const d of[-1,1]){
+    const p=new THREE.Group();p.position.set(d*(tw+0.03),shY-0.03,0);
+    const a=outl(new THREE.Mesh(new THREE.CapsuleGeometry(0.105,0.3,4,10),shirt),1.11);a.position.y=-0.25;p.add(a);
+    const h=outl(new THREE.Mesh(new THREE.SphereGeometry(0.15,12,10),skin),1.08);h.position.y=-0.47;p.add(h);
+    G.add(p);arms.push(p);
+  }
+  const head=new THREE.Group();head.position.y=headY;
+  const sk=outl(new THREE.Mesh(new THREE.SphereGeometry(R,26,20),skin),1.07);sk.scale.set(1,1.04,0.96);sk.castShadow=true;head.add(sk);
+  if(o.hair!==null){const hr=new THREE.Mesh(new THREE.SphereGeometry(R*1.05,24,16,0,Math.PI*2,0,Math.PI*0.42),toon(o.hair));
+    hr.position.set(0,R*0.08,-R*0.06);hr.scale.set(1.03,1.08,1.03);head.add(hr);}
+  if(o.cap){const c=outl(new THREE.Mesh(new THREE.SphereGeometry(R*1.08,24,14,0,Math.PI*2,0,Math.PI*0.4),toon(o.cap)),1.05);
+    c.position.y=R*0.14;head.add(c);const v=new THREE.Mesh(new THREE.CylinderGeometry(R*0.7,R*0.7,0.04,20,1,false,-Math.PI/2,Math.PI),toon(o.cap));
+    v.position.set(0,R*0.5,R*0.55);v.rotation.x=0.15;head.add(v);}
+  const eyes=[],pupils=[],brows=[];
+  for(const d of[-1,1]){
+    const w=new THREE.Mesh(new THREE.SphereGeometry(R*0.36,18,14),basic(0xffffff));w.position.set(d*R*0.4,R*0.02,R*0.78);w.scale.set(1,1.15,0.48);head.add(w);eyes.push(w);
+    const pu=new THREE.Mesh(new THREE.SphereGeometry(R*0.17,14,12),basic(0x1a0f08));pu.position.set(d*R*0.4,0,R*0.94);pu.scale.set(1,1.05,0.5);head.add(pu);pupils.push(pu);
+    const sp=new THREE.Mesh(new THREE.SphereGeometry(R*0.06,8,8),basic(0xffffff));sp.position.set(d*R*0.4+R*0.07,R*0.09,R*0.99);head.add(sp);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(R*0.42,R*(o.thickBrow?0.12:0.075),R*0.09),toon(o.browC||o.hair||0x2a1d14));
+    b.position.set(d*R*0.4,R*0.46,R*0.82);head.add(b);brows.push(b);
+  }
+  for(const d of[-1,1]){const c=new THREE.Mesh(new THREE.SphereGeometry(R*0.24,12,10),new THREE.MeshBasicMaterial({color:0xf2897a,transparent:true,opacity:0.55}));
+    c.position.set(d*R*0.7,-R*0.3,R*0.64);c.scale.set(1,0.66,0.34);head.add(c);}
+  const nose=outl(new THREE.Mesh(new THREE.SphereGeometry(R*(o.nose||0.13),12,10),toon(o.noseC||0xe3a084)),1.06);
+  nose.position.set(0,-R*0.2,R*0.95);nose.scale.set(1,0.9,0.9);head.add(nose);
+  if(o.stache){const m=outl(new THREE.Mesh(new THREE.CapsuleGeometry(R*0.1,R*0.5,4,8),toon(o.stache)),1.06);
+    m.rotation.z=Math.PI/2;m.position.set(0,-R*0.36,R*0.9);m.scale.set(1,1,0.6);head.add(m);}
+  if(o.beard){const bd=new THREE.Mesh(new THREE.SphereGeometry(R*1.0,22,14,0,Math.PI*2,Math.PI*0.68,Math.PI*0.32),toon(o.beard));
+    bd.position.set(0,-R*0.04,R*0.04);bd.scale.set(1.04,1.08,1.02);head.add(bd);}
+  const mouthY=o.beard?-0.56:-0.5;
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(R*0.3,R*0.06,8,20,Math.PI),basic(0x53261a));smile.position.set(0,R*mouthY,R*0.8);smile.rotation.z=Math.PI;head.add(smile);
+  const flat=new THREE.Mesh(new THREE.BoxGeometry(R*0.4,R*0.07,R*0.05),basic(0x53261a));flat.position.set(0,R*(mouthY-0.05),R*0.88);head.add(flat);
+  const talk=new THREE.Mesh(new THREE.SphereGeometry(R*0.22,14,12),basic(0x4a1e14));talk.position.set(0,R*(mouthY-0.04),R*0.8);head.add(talk);
+  G.add(head);
+  G.userData={legs,arms,head,smile,flat,talk,eyes,pupils,brows,R,seed:o.seed||1};
+  return G;
+}
+function pose(c,o){
+  const u=c.userData,t=o.t||0,ph=o.ph||0,a=o.amp||0;
+  u.legs[0].rotation.x=Math.sin(ph)*a+(o.legL||0); u.legs[1].rotation.x=-Math.sin(ph)*a+(o.legR||0);
+  u.arms[0].rotation.x=-Math.sin(ph)*a*0.9+(o.armL||0); u.arms[1].rotation.x=Math.sin(ph)*a*0.9+(o.armR||0);
+  u.arms[0].rotation.z=-(o.armLz||0); u.arms[1].rotation.z=(o.armRz||0);
+  u.head.rotation.set((o.headX||0),(o.headY||0)+Math.sin(t*1.6+u.seed)*0.05,(o.headZ||0));
+  const k=(t*0.55+u.seed*0.37)%1, bl=k>0.955?1-Math.abs(k-0.9775)/0.0225:0;
+  const eo=o.wide?1.35:1;
+  u.eyes.forEach(e=>e.scale.y=1.15*eo*(1-bl*0.92)); u.pupils.forEach(p=>{p.scale.y=1.05*(1-bl*0.92);p.scale.x=o.wide?0.8:1;});
+  const m=o.mouth||'smile';
+  u.smile.visible=m==='smile'; u.flat.visible=m==='flat'; u.talk.visible=m==='talk'||m==='scream';
+  if(m==='talk'){const op=0.35+Math.abs(Math.sin(t*15.5))*0.9;u.talk.scale.set(1.1,op,0.7);}
+  if(m==='scream'){u.talk.scale.set(1.25,1.7+Math.sin(t*30)*0.15,0.7);}
+  u.brows.forEach((b,i)=>{const s=o.brow||0; b.rotation.z=(i===0?1:-1)*s*0.35; b.position.y=u.R*(0.46+(o.browUp||0));});
+}
+
+// ---------- karakterler (yer tutucu: oyuncu görüntüsü gelince yüzler benzetilecek) ----------
+const ethem=makeChar({skin:0xe9bf98,hair:0x1d1410,shirt:0x5b6b7a,pants:0x2f3540,headR:0.5,belly:0.38,hipY:0.95,shY:1.65,headY:2.2,
+  stache:0x1d1410,beard:0x2a1e18,thickBrow:true,nose:0.17,seed:3});
+scene.add(ethem);
+const kid=makeChar({skin:0xf2cfa6,hair:0x2b1d12,shirt:0xff4d4d,pants:0x2f5fa8,headR:0.5,hipY:0.55,shY:0.98,headY:1.5,seed:5});
+scene.add(kid);
+const uncle2=makeChar({skin:0xe5b88f,hair:0x3a2618,shirt:0x2f9e6a,pants:0x3a3a48,headR:0.44,hipY:0.95,shY:1.6,headY:2.1,stache:0x3a2618,seed:7});
+scene.add(uncle2);
+const aunt=makeChar({skin:0xefc8a4,hair:null,shirt:0xb44a8a,pants:0x3a2440,headR:0.45,hipY:0.9,shY:1.55,headY:2.05,seed:9,cap:0xf3e6c8});
+scene.add(aunt);
+
+// dondurma
+const cone=new THREE.Group();
+{const c=outl(new THREE.Mesh(new THREE.ConeGeometry(0.12,0.35,12),toon(0xd9a35a)),1.08);c.rotation.x=Math.PI;cone.add(c);
+ const s=outl(new THREE.Mesh(new THREE.SphereGeometry(0.15,12,10),toon(0xffb3d1)),1.08);s.position.y=0.2;cone.add(s);}
+kid.userData.arms[1].add(cone); cone.position.set(0,-0.55,0.12);
+
+// ---------- drone ----------
+const drone=new THREE.Group(), rotors=[];
+{const body=outl(new THREE.Mesh(new THREE.SphereGeometry(0.55,20,14),toon(0xf4f4f4)),1.06);body.scale.set(1.25,0.55,1.25);drone.add(body);
+ const band=new THREE.Mesh(new THREE.CylinderGeometry(0.7,0.7,0.12,24),toon(0xff6a13));drone.add(band);
+ const cam=outl(new THREE.Mesh(new THREE.SphereGeometry(0.2,12,10),toon(0x222222)),1.08);cam.position.set(0,-0.18,0.6);drone.add(cam);
+ const lens=new THREE.Mesh(new THREE.SphereGeometry(0.09,10,8),basic(0x5ad1ff));lens.position.set(0,-0.18,0.78);drone.add(lens);
+ for(let i=0;i<4;i++){const ang=Math.PI/4+i*Math.PI/2;
+   const arm=outl(new THREE.Mesh(new THREE.BoxGeometry(1.3,0.09,0.14),toon(0x444a52)),1.08);arm.position.set(Math.cos(ang)*0.75,0.05,Math.sin(ang)*0.75);arm.rotation.y=-ang;drone.add(arm);
+   const hub=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,0.18,12),toon(0x333333));hub.position.set(Math.cos(ang)*1.35,0.12,Math.sin(ang)*1.35);drone.add(hub);
+   const rot=new THREE.Group();rot.position.set(Math.cos(ang)*1.35,0.24,Math.sin(ang)*1.35);
+   const disk=new THREE.Mesh(new THREE.CircleGeometry(0.55,24),new THREE.MeshBasicMaterial({color:0xdddddd,transparent:true,opacity:0.35,side:THREE.DoubleSide}));disk.rotation.x=-Math.PI/2;rot.add(disk);
+   for(const s of[0,1]){const bl=new THREE.Mesh(new THREE.BoxGeometry(1.05,0.02,0.1),toon(0x222222));bl.rotation.y=s*Math.PI/2;rot.add(bl);}
+   drone.add(rot);rotors.push(rot);
+   const led=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),basic(i<2?0xff2a2a:0x2aff5a));led.position.set(Math.cos(ang)*1.35,-0.02,Math.sin(ang)*1.35);drone.add(led);}
+ // pençe
+ const rod=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.7,8),toon(0x555555));rod.position.y=-0.6;drone.add(rod);
+ for(const d of[-1,1]){const f=outl(new THREE.Mesh(new THREE.BoxGeometry(0.08,0.4,0.08),toon(0x555555)),1.1);f.position.set(d*0.12,-1.05,0);f.rotation.z=d*0.35;drone.add(f);}
+}
+drone.scale.setScalar(0.9);
+scene.add(drone);
+
+// ---------- mahalle ----------
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),toon(0x7cc35a));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const path=new THREE.Mesh(new THREE.PlaneGeometry(6,200),toon(0xe9d7b0));path.rotation.x=-Math.PI/2;path.position.set(0,0.01,0);scene.add(path);
+function winTex(base){const c=document.createElement('canvas');c.width=128;c.height=256;const g=c.getContext('2d');
+  g.fillStyle=base;g.fillRect(0,0,128,256);
+  for(let y=14;y<250;y+=40)for(let x=12;x<120;x+=38){g.fillStyle='#3a2a20';g.fillRect(x-2,y-2,26,28);g.fillStyle=Math.random()<0.3?'#ffe9a0':'#9ad7ff';g.fillRect(x,y,22,24);}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const cols=['#ffcf7a','#ff9f80','#a8d8ff','#ffe3f1','#c9f0b0','#f7d3a2'];
+const blocks=[];
+let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+for(let i=0;i<70;i++){
+  const side=i%2?1:-1, z=-10-Math.floor(i/2)*9+ (rnd()*3);
+  const x=side*(9+rnd()*14), h=8+rnd()*18, w=6+rnd()*3;
+  const tex=winTex(cols[i%cols.length]); tex.repeat.set(w/6,h/12);
+  const m=outl(new THREE.Mesh(new THREE.BoxGeometry(w,h,w),toon(0xffffff,{map:tex})),1.02);
+  m.position.set(x,h/2,z); m.castShadow=true; scene.add(m); blocks.push(m);
+  const roof=new THREE.Mesh(new THREE.BoxGeometry(w+0.4,0.5,w+0.4),toon(0xc0503a));roof.position.set(x,h+0.25,z);scene.add(roof);
+}
+function tree(x,z,s){const g=new THREE.Group();const tr=outl(new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.28,1.6,8),toon(0x7a4a2a)),1.1);tr.position.y=0.8;g.add(tr);
+  const top=outl(new THREE.Mesh(new THREE.SphereGeometry(1.2,14,12),toon(0x3fae49)),1.05);top.position.y=2.3;g.add(top);g.position.set(x,0,z);g.scale.setScalar(s);scene.add(g);}
+for(let i=0;i<16;i++)tree((i%2?1:-1)*(4.5+rnd()*2),8-i*7,0.9+rnd()*0.5);
+const bench=outl(new THREE.Mesh(new THREE.BoxGeometry(2.2,0.15,0.6),toon(0x9a5a2a)),1.06);bench.position.set(-2.6,0.55,2);scene.add(bench);
+const clouds=[];for(let i=0;i<14;i++){const g=new THREE.Group();for(let j=0;j<4;j++){const s=new THREE.Mesh(new THREE.SphereGeometry(2+rnd()*1.5,12,10),basic(0xffffff));s.position.set(j*2.4-3.6,rnd(),0);g.add(s);}
+  g.position.set(-60+rnd()*120,32+rnd()*14,-20-rnd()*140);scene.add(g);clouds.push(g);}
+// kuşlar
+const birds=[];for(let i=0;i<5;i++){const b=new THREE.Group();for(const d of[-1,1]){const w=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.05,0.25),toon(0x333344));w.position.x=d*0.35;b.add(w);}scene.add(b);birds.push(b);}
+
+// ---------- 2B katman ----------
+const ui=document.getElementById('ui').getContext('2d');
+function bubbleText(txt,y,size,fill,stroke){ui.font=`900 ${size}px "Arial Black",Arial,sans-serif`;ui.textAlign='center';ui.lineJoin='round';
+  ui.lineWidth=size*0.22;ui.strokeStyle=stroke||'#000';ui.strokeText(txt,W/2,y);ui.fillStyle=fill||'#fff';ui.fillText(txt,W/2,y);}
+// yer tutucu altyazı — gerçek ses gelince kelime zamanlarıyla değişecek
+const CAPS=[[0.2,3,'[ETHEM ANLATIYOR]'],[3,7,'YEĞENİM PARKTA…'],[7,10,'BİR DRONE GELDİ…'],[10,15,'ÇOCUĞU KAPTI GİTTİ!'],[15,18,'ARKASINDAN KOŞTUK…'],[18,21,'[ETHEM\'İN YÜZÜ]']];
+function drawUI(t){
+  ui.clearRect(0,0,W,H);
+  if(t<2.6){const k=back(sm(0,0.5,t)); ui.save();ui.translate(W/2,250);ui.scale(k,k);ui.rotate(-0.05);
+    ui.fillStyle='#ffde00';ui.strokeStyle='#000';ui.lineWidth=10;ui.beginPath();ui.roundRect(-490,-95,980,170,30);ui.fill();ui.stroke();
+    ui.font='900 80px "Arial Black",Arial';ui.textAlign='center';ui.fillStyle='#000';ui.fillText('DRONE YEĞENİ KAPTI!',0,25);ui.restore();}
+  for(const[a,b,s]of CAPS)if(t>=a&&t<b){const k=back(sm(a,a+0.25,t));ui.save();ui.translate(0,1560);ui.translate(W/2,0);ui.scale(k,k);ui.translate(-W/2,0);
+    bubbleText(s,0,78,'#fff','#000');ui.restore();}
+  ui.font='600 30px Arial';ui.fillStyle='rgba(255,255,255,0.55)';ui.textAlign='right';ui.fillText('animatik · ses bekleniyor',W-30,H-30);
+}
+
+// ---------- zaman çizelgesi ----------
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function droneAt(t){ // drone yolu: iner (4-7), kapar (7-8), kalkar ve uçar (8-21)
+  if(t<4)return V(14,16,-6);
+  if(t<7){const k=sm(4,7,t);return V(lerp(14,0.6,k),lerp(16,3.0,k),lerp(-6,2.6,k));}
+  if(t<8.2)return V(0.6,3.0+Math.sin(t*6)*0.05,2.6);
+  const k=t-8.2; return V(0.6+Math.sin(k*0.6)*4, 3.0+Math.min(k*3.2,16)+Math.sin(k*2)*0.4, 2.6-k*5.5);
+}
+function renderAt(t){
+  t=clamp(t,0,DUR);
+  rotors.forEach((r,i)=>r.rotation.y=t*55*(i%2?1:-1));
+  const dp=droneAt(t); drone.position.copy(dp);
+  drone.rotation.z=Math.sin(t*2.3)*0.08; drone.rotation.x=t>8.2?-0.18:0.05;
+  clouds.forEach((c,i)=>c.position.x+=0); // sabit; zaman fonksiyonu saf kalsın
+  birds.forEach((b,i)=>{const k=t*0.9+i*1.3;b.position.set(-8+i*3+Math.sin(k)*2, 22+i*0.8+Math.sin(k*2)*0.5, -30-t*3-i*4);
+    b.children[0].rotation.z=Math.sin(t*12+i)*0.6;b.children[1].rotation.z=-Math.sin(t*12+i)*0.6;b.visible=t>10&&t<15;});
+
+  // çocuk: bankın yanında dondurma yer; 7.6'da kapılır
+  const grabbed=t>=7.6;
+  if(!grabbed){kid.position.set(0.6,0,2.6);kid.rotation.y=0.2;
+    const look=t>5.6;
+    pose(kid,{t,armR:-1.3,armL:0.1,headX:look?-0.55:0.1,headY:look?0:0.3,mouth:look?'talk':'smile',wide:look,browUp:look?0.08:0});}
+  else{const hang=V(dp.x,dp.y-2.55,dp.z); kid.position.copy(hang); kid.rotation.y=Math.sin(t*1.5)*0.3;
+    const sw=Math.sin(t*14);
+    pose(kid,{t,ph:t*14,amp:0.7,armLz:2.1+sw*0.3,armRz:2.1-sw*0.3,mouth:'scream',wide:true,browUp:0.1,headX:-0.1});}
+
+  // kamera ve diğer karakterler — çekim çekim
+  ethem.visible=uncle2.visible=aunt.visible=false;
+  if(t<3||t>=18){ // Ethem yakın plan, kameraya anlatıyor
+    ethem.visible=true; ethem.position.set(0,0,30); ethem.rotation.y=0;
+    const end=t>=18;
+    pose(ethem,{t,mouth:end?'flat':'talk',brow:end?0.25:0.1,headZ:end?0.06:Math.sin(t*2)*0.04,armR:end?0:-0.6+Math.sin(t*3)*0.2,armRz:end?0.1:0.3});
+    camera.position.set(0,2.15,30+3.1-(end?sm(18,21,t)*0.6:0)); camera.lookAt(0,2.0,30);
+    scene.background.set(0x8fd3ff);
+  } else if(t<7.6){ // park: geniş plan, drone gelir
+    const k=sm(3,7.6,t);
+    camera.position.set(lerp(-4,-2.5,k),lerp(2.6,2.0,k),lerp(10,7.5,k)); camera.lookAt(lerp(0.6,0.6,k),lerp(1.4,2.6,k),2.6);
+  } else if(t<10){ // kapma anı: alttan bakış
+    camera.position.set(-1.8,0.9,6.5); camera.lookAt(dp.x,dp.y-1.5,dp.z);
+  } else if(t<15){ // şehir üstünde uçuş: yandan takip
+    camera.position.set(dp.x-6,dp.y+1.2,dp.z+5); camera.lookAt(dp.x,dp.y-1.2,dp.z);
+  } else { // aşağıda koşan aile
+    const z0=2-(t-15)*4.2;
+    [[ethem,0],[uncle2,-1.4],[aunt,1.4]].forEach(([c,x],i)=>{c.visible=true;c.position.set(x,0,z0-i*0.6);c.rotation.y=Math.PI;
+      pose(c,{t,ph:t*13+i,amp:0.9,armLz:i===0?0:0.3,armR:i===0?-2.6:0,mouth:'scream',wide:true,headX:-0.45});});
+    camera.position.set(0,1.6,z0-7); camera.lookAt(0,4,z0+2);
+  }
+  renderer.render(scene,camera);
+  drawUI(t);
+}
+window.FILM={renderAt,DUR,W,H};
+renderAt(0);
+})();
+</script>
+</body></html>
