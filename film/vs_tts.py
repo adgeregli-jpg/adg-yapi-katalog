@@ -23,7 +23,7 @@ a = p.parse_args()
 
 from voxcpm import VoxCPM
 t0 = time.time()
-m = VoxCPM.from_pretrained(a.model, load_denoiser=False)
+m = VoxCPM.from_pretrained(a.model, load_denoiser=False, optimize=False)
 print(f"model yüklendi: {time.time()-t0:.1f} sn")
 
 text = f"({a.desc}){a.text}" if a.desc and not a.ref else a.text

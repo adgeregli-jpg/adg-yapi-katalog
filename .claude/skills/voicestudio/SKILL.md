@@ -52,7 +52,7 @@ sarmalayıcıdır. Konteynerde doğrudan paketi kullan — tam uygulamayı
 
 ```bash
 python3 -m venv vs && . vs/bin/activate
-pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch>=2.5" torchaudio "voxcpm>=2.0.3"
+pip install "torch>=2.5" torchaudio "voxcpm>=2.0.3"   # download.pytorch.org burada engelli
 # ilk çalıştırmada huggingface.co'dan birkaç GB model iner
 python film/vs_tts.py cikti.wav "Bizim mahalle çok güzel oldu!" --desc "a cheerful little Turkish girl, about 7 years old"
 python film/asr.py cikti.wav          # kalite kapısı: metni doğru duyuyor mu?
@@ -60,10 +60,10 @@ python film/band.py cikti.wav         # netlik: hedef −6 … 0 dB
 ```
 
 - Ortam: huggingface.co ve download.pytorch.org erişilebilir olmalı; 4 çekirdek
-  CPU'da çalışır (yavaş). Kurulum ~10+ dk sürer, arka planda çalıştır.
+  CPU'da çalışır. Kurulum ~20 dk sürer, arka planda çalıştır.
 - Çıktı 48 kHz mono WAV. Filme girecekse `el_pick.py` zincirindeki gibi
   `loudnorm=I=-17:TP=-3` ile bitir ve sona 40 ms yumuşak kapanış ekle.
-- Ölçülen sonuçlar için aşağıdaki "Deneme kaydı"na bak.
+- Ölçülen hız/kalite için aşağıdaki "Deneme kaydı"na bak. Konteyner yeniden başlarsa venv ve model kaybolur; yeniden kur.
 
 ## 4. Kullanıcının bilgisayarında tam uygulama
 
@@ -97,4 +97,31 @@ Bu konteynerden kullanıcının localhost'una erişilmez; bilgisayarı gerekiyor
 
 ## Deneme kaydı
 
-(bkz. aşağıdaki ölçümler — her yeni denemede güncelle)
+**2026-11-26, bulut konteyner, 4 çekirdek CPU, VoxCPM2 (voxcpm 2.0.3, torch 2.15):**
+
+- Kurulum: `download.pytorch.org` bu konteynerden **engelli** (403) — oradan
+  kurmaya çalışınca pip sessizce takılır. Torch'u düz PyPI'dan kur
+  (`pip install torch torchaudio voxcpm`); CUDA'lı tekerlek iner ama CPU'da
+  çalışır. Kurulum ~20 dk, model indirmesi ~6 GB (`~/.cache/huggingface`).
+- `optimize=False` ver (CPU'da torch.compile işe yaramaz). Model yükleme
+  ~40 sn; üretim gerçek zamanın ~3,3 katı (3,4 sn ses ≈ 11 sn).
+
+| Deneme | Whisper `medium` duyduğu | Medyan F0 | anlaşılırlık−çamur |
+|---|---|---|---|
+| kız, tarifli: "Bizim mahalle çok güzel oldu!" | birebir doğru | 272 Hz | −6,7 dB |
+| oğlan, tarifli: "Evlerimiz tam zamanında hazır oldu…" | birebir doğru | 496 Hz (bağırır gibi) | +0,2 dB |
+| tarifsiz: "Peki… bu işin uzmanı kim?" | birebir doğru | 155 Hz (**yetişkin**) | −13,2 dB (boğuk) |
+| kız, slogan + `A... Deee... Ge... Yapı!` | "…A-D-E-G Yapı" — harfler ayrı, ama "Kentel", "Mütihahitlik" | 271 Hz | +0,7 dB |
+| oğlan, `Tabii ki A... Deee... Ge... Yapı!` | "E diye, GE yapı" — **marka bozuk** | 288 Hz | −1,4 dB |
+
+Sonuçlar:
+- Türkçe kısa günlük cümleleri doğru okuyor. Uzun/teknik kelimelerde
+  ("kentsel", "müteahhitlik") kayıyor.
+- Çocuk sesi için **`--desc` tarifi şart**; tarifsiz yetişkin ve boğuk çıkıyor.
+  Tarif İngilizce yazılır.
+- "ADG" söyleyişi tutarsız: kızda tuttu, oğlanda bozuldu. Marka repliğini her
+  seferinde `medium` ile kontrol et, gerekirse birkaç deneme üretip en doğru
+  olanı seç (`el_pick.py` mantığı).
+- Duygu etiketleri (`[excited]` vb.) yok; duygu yalnız tariften gelir.
+  ElevenLabs `eleven_v4` kadar ifadeli değil. Taslak/prova için uygun, müşteri
+  filmi için ElevenLabs kalır.
